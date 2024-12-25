@@ -1,4 +1,6 @@
-﻿using PoRemoveBad.Core.Services;
+﻿using System.Diagnostics;
+using PoRemoveBad.Core.Models;
+using PoRemoveBad.Core.Services;
 using PoRemoveBad.Mobile.ViewModels;
 
 namespace PoRemoveBad.Mobile;
@@ -12,13 +14,29 @@ public partial class MainPage : ContentPage
 
 	public MainPage(ITextProcessingService textProcessingService, IExportService exportService)
 	{
-		InitializeComponent();
-		_textProcessingService = textProcessingService;
-		_exportService = exportService;
-		_viewModel = new MainPageViewModel();
-		BindingContext = _viewModel;
+		try
+		{
+			Debug.WriteLine("Starting MainPage initialization...");
+			_textProcessingService = textProcessingService;
+			_exportService = exportService;
+			_viewModel = new MainPageViewModel();
 
-		InitializeAsync();
+			Debug.WriteLine("Initializing MainPage components...");
+			InitializeComponent();
+			Debug.WriteLine("MainPage components initialized");
+
+			BindingContext = _viewModel;
+			Debug.WriteLine("BindingContext set");
+
+			// Initialize dictionary
+			InitializeAsync();
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"Error in MainPage constructor: {ex.Message}");
+			Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+			throw;
+		}
 	}
 
 	private async void InitializeAsync()
@@ -43,7 +61,43 @@ public partial class MainPage : ContentPage
 		{
 			_viewModel.Reset();
 			_processedText = null;
+			UpdateOutputDisplay("");
 		}
+	}
+
+	private void UpdateOutputDisplay(string text)
+	{
+		var htmlContent = $@"
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<meta charset='utf-8'>
+				<meta name='viewport' content='width=device-width, initial-scale=1'>
+				<style>
+					body {{
+						font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+						padding: 10px;
+						margin: 0;
+						line-height: 1.5;
+						font-size: 16px;
+						word-wrap: break-word;
+					}}
+					mark {{
+						background-color: yellow;
+						border-radius: 3px;
+						padding: 0 2px;
+					}}
+				</style>
+			</head>
+			<body>
+				{text}
+			</body>
+			</html>";
+
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			OutputWebView.Source = new HtmlWebViewSource { Html = htmlContent };
+		});
 	}
 
 	private async void OnProcessClicked(object sender, EventArgs e)
@@ -53,11 +107,17 @@ public partial class MainPage : ContentPage
 		try
 		{
 			ProcessButton.IsEnabled = false;
+			Debug.WriteLine($"Processing text: {InputEditor.Text}");
+
 			var progress = new Progress<double>();
 			var result = await _textProcessingService.ProcessTextAsync(InputEditor.Text, progress);
 			
+			Debug.WriteLine($"Processed text: {result.ProcessedText}");
+			Debug.WriteLine($"Replaced words count: {result.Statistics.ReplacedWordsCount}");
+
 			_processedText = result.ProcessedText;
-			OutputEditor.Text = _processedText;
+			UpdateOutputDisplay(_processedText);
+			
 			_viewModel.HasProcessedText = true;
 			_viewModel.UpdateStatistics(result.Statistics);
 
@@ -78,6 +138,8 @@ public partial class MainPage : ContentPage
 		}
 		catch (Exception ex)
 		{
+			Debug.WriteLine($"Error processing text: {ex.Message}");
+			Debug.WriteLine($"StackTrace: {ex.StackTrace}");
 			await DisplayAlert("Error", "Failed to process text: " + ex.Message, "OK");
 		}
 		finally
@@ -107,7 +169,16 @@ public partial class MainPage : ContentPage
 
 		try
 		{
-			var fileBytes = await _exportService.ExportToFileAsync(_processedText, _viewModel, format);
+			var statistics = new TextStatistics
+			{
+				TotalWords = _viewModel.TotalWords,
+				TotalCharacters = _viewModel.TotalCharacters,
+				ReplacedWordsCount = _viewModel.ReplacedWordsCount,
+				SentenceCount = _viewModel.SentenceCount,
+				ParagraphCount = _viewModel.ParagraphCount
+			};
+
+			var fileBytes = await _exportService.ExportToFileAsync(_processedText, statistics, format);
 			var fileName = $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.{format}";
 
 			var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
@@ -121,6 +192,8 @@ public partial class MainPage : ContentPage
 		}
 		catch (Exception ex)
 		{
+			Debug.WriteLine($"Error exporting file: {ex.Message}");
+			Debug.WriteLine($"StackTrace: {ex.StackTrace}");
 			await DisplayAlert("Error", $"Failed to export text as {format.ToUpper()}: " + ex.Message, "OK");
 		}
 	}

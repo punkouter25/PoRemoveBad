@@ -395,6 +395,324 @@
       "replacementOptions": ["oh no", "bother", "rats"],
       "category": "Mild",
       "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "fudge",
+      "replacementOptions": ["oh my", "goodness", "dear me"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "goddamn",
+      "replacementOptions": ["extremely", "very", "really"],
+      "category": "Profanity",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "prick",
+      "replacementOptions": ["unpleasant person", "difficult individual", "mean person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "wanker",
+      "replacementOptions": ["foolish person", "unpleasant individual", "difficult person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "bloody",
+      "replacementOptions": ["extremely", "very", "really"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "bollocks",
+      "replacementOptions": ["nonsense", "rubbish", "silliness"],
+      "category": "Profanity",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "bugger",
+      "replacementOptions": ["bother", "annoy", "disturb"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "cock",
+      "replacementOptions": ["rooster", "bird", "fowl"],
+      "category": "Profanity",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dick",
+      "replacementOptions": ["mean person", "unpleasant individual", "difficult person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "twat",
+      "replacementOptions": ["foolish person", "unpleasant individual", "difficult person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "wench",
+      "replacementOptions": ["woman", "person", "individual"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "slag",
+      "replacementOptions": ["unpleasant person", "difficult individual", "mean person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "tosser",
+      "replacementOptions": ["foolish person", "silly individual", "unwise person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "git",
+      "replacementOptions": ["unpleasant person", "difficult individual", "annoying person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "minger",
+      "replacementOptions": ["unattractive person", "unpleasant individual", "difficult person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "numpty",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "plonker",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "muppet",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "pillock",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "nincompoop",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "nitwit",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dimwit",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "halfwit",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "bonkers",
+      "replacementOptions": ["crazy", "wild", "unusual"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "barmy",
+      "replacementOptions": ["foolish", "silly", "strange"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "daft",
+      "replacementOptions": ["silly", "foolish", "unwise"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "dotty",
+      "replacementOptions": ["eccentric", "peculiar", "odd"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "crackers",
+      "replacementOptions": ["crazy", "wild", "unusual"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "mental",
+      "replacementOptions": ["emotional", "upset", "disturbed"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "psycho",
+      "replacementOptions": ["disturbed person", "troubled individual", "unstable person"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "nutter",
+      "replacementOptions": ["eccentric person", "unusual individual", "odd person"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "loony",
+      "replacementOptions": ["eccentric", "unusual", "peculiar"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "maniac",
+      "replacementOptions": ["enthusiast", "zealot", "fanatic"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "nuts",
+      "replacementOptions": ["crazy", "wild", "unusual"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "nutcase",
+      "replacementOptions": ["eccentric person", "unusual individual", "odd person"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "bonehead",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "airhead",
+      "replacementOptions": ["thoughtless person", "careless individual", "distracted person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "birdbrain",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "numbskull",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dunce",
+      "replacementOptions": ["slow learner", "struggling student", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "imbecile",
+      "replacementOptions": ["foolish person", "unwise individual", "confused person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "ninny",
+      "replacementOptions": ["foolish person", "silly individual", "confused person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "simpleton",
+      "replacementOptions": ["naive person", "innocent individual", "trusting person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dingbat",
+      "replacementOptions": ["eccentric person", "odd individual", "peculiar person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "doofus",
+      "replacementOptions": ["clumsy person", "awkward individual", "uncoordinated person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dweeb",
+      "replacementOptions": ["awkward person", "socially challenged individual", "peculiar person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "nerd",
+      "replacementOptions": ["studious person", "intellectual individual", "academic person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "geek",
+      "replacementOptions": ["enthusiast", "expert", "specialist"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "wimp",
+      "replacementOptions": ["timid person", "cautious individual", "hesitant person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "coward",
+      "replacementOptions": ["fearful person", "timid individual", "cautious person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "chicken",
+      "replacementOptions": ["fearful person", "timid individual", "cautious person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "scaredy-cat",
+      "replacementOptions": ["fearful person", "timid individual", "cautious person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "wussy",
+      "replacementOptions": ["timid person", "cautious individual", "hesitant person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
     }
   ]
 } 

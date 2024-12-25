@@ -20,13 +20,27 @@ public static class MauiProgram
 		// Register Core services
 		builder.Services.AddCoreServices();
 
-		// Register pages
+		// Register app and pages
+		builder.Services.AddSingleton<App>();
 		builder.Services.AddTransient<MainPage>();
+
+		// Configure logging
+		builder.Services.AddLogging(logging =>
+		{
+			logging.AddDebug();
+			logging.SetMinimumLevel(LogLevel.Trace);
+		});
 
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
+		var app = builder.Build();
+
+		// Initialize the dictionary at startup
+		var textService = app.Services.GetRequiredService<ITextProcessingService>();
+		textService.InitializeDictionaryAsync().GetAwaiter().GetResult();
+
+		return app;
 	}
 }

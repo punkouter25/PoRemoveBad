@@ -98,11 +98,17 @@ public partial class TextProcessingService : ITextProcessingService
 
                 // Randomly select a replacement option
                 var index = _random.Next(replacement.ReplacementOptions.Length);
-                return replacement.ReplacementOptions[index];
+                var replacementWord = replacement.ReplacementOptions[index];
+                return $"[HIGHLIGHT]{replacementWord}[/HIGHLIGHT]";
             }
 
             return word;
         }));
+
+        // Replace the highlight markers with actual HTML
+        processedText = processedText
+            .Replace("[HIGHLIGHT]", "<mark style='background-color: yellow; border-radius: 3px; padding: 0 2px;'>")
+            .Replace("[/HIGHLIGHT]", "</mark>");
 
         statistics.GraphData = segments;
         return (processedText, statistics);
