@@ -1,0 +1,400 @@
+{
+  "words": [
+    {
+      "originalWord": "bad",
+      "replacementOptions": ["unpleasant", "poor", "subpar", "unfavorable"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "stupid",
+      "replacementOptions": ["unwise", "foolish", "misguided", "ill-advised"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "idiot",
+      "replacementOptions": ["uninformed person", "confused individual", "misguided person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "hate",
+      "replacementOptions": ["dislike", "disapprove of", "oppose"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "kill",
+      "replacementOptions": ["defeat", "eliminate", "remove"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "fuck",
+      "replacementOptions": ["darn", "blast", "oh my"],
+      "category": "Profanity",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "fucking",
+      "replacementOptions": ["extremely", "very", "really"],
+      "category": "Profanity",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "fucked",
+      "replacementOptions": ["messed up", "ruined", "damaged"],
+      "category": "Profanity",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "shit",
+      "replacementOptions": ["stuff", "thing", "mess"],
+      "category": "Profanity",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "damn",
+      "replacementOptions": ["darn", "oh no", "rats"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "hell",
+      "replacementOptions": ["heck", "oh my", "goodness"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "ass",
+      "replacementOptions": ["behind", "rear", "bottom"],
+      "category": "Profanity",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "crap",
+      "replacementOptions": ["stuff", "junk", "nonsense"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "bastard",
+      "replacementOptions": ["unpleasant person", "difficult person", "troublemaker"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "bitch",
+      "replacementOptions": ["difficult person", "complainer", "troublemaker"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dumb",
+      "replacementOptions": ["unintelligent", "unwise", "thoughtless"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "suck",
+      "replacementOptions": ["disappoint", "underperform", "fall short"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "sucks",
+      "replacementOptions": ["disappoints", "underperforms", "falls short"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "sucked",
+      "replacementOptions": ["disappointed", "underperformed", "fell short"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "moron",
+      "replacementOptions": ["foolish person", "unwise individual", "confused person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dork",
+      "replacementOptions": ["silly person", "odd individual", "peculiar person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "loser",
+      "replacementOptions": ["underachiever", "unfortunate person", "disappointed person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "jerk",
+      "replacementOptions": ["mean person", "unkind individual", "difficult person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "shut up",
+      "replacementOptions": ["be quiet", "stop talking", "silence please"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "piss",
+      "replacementOptions": ["annoy", "irritate", "bother"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "pissed",
+      "replacementOptions": ["annoyed", "irritated", "bothered"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "screw",
+      "replacementOptions": ["mess up", "ruin", "damage"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "screwed",
+      "replacementOptions": ["messed up", "ruined", "damaged"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "retard",
+      "replacementOptions": ["uninformed person", "confused individual", "challenged person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "retarded",
+      "replacementOptions": ["uninformed", "confused", "challenged"],
+      "category": "Offensive",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "shitty",
+      "replacementOptions": ["poor", "terrible", "awful"],
+      "category": "Profanity",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "bullshit",
+      "replacementOptions": ["nonsense", "falsehood", "deception"],
+      "category": "Profanity",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "asshole",
+      "replacementOptions": ["mean person", "difficult individual", "unpleasant person"],
+      "category": "Profanity",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "lame",
+      "replacementOptions": ["disappointing", "underwhelming", "inadequate"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "freaking",
+      "replacementOptions": ["really", "very", "extremely"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "frick",
+      "replacementOptions": ["darn", "oh my", "goodness"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "fricking",
+      "replacementOptions": ["really", "very", "extremely"],
+      "category": "Mild",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "slut",
+      "replacementOptions": ["promiscuous person", "flirtatious individual", "questionable person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "whore",
+      "replacementOptions": ["promiscuous person", "questionable individual", "disreputable person"],
+      "category": "Offensive",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "butt",
+      "replacementOptions": ["behind", "rear", "bottom"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "butthead",
+      "replacementOptions": ["silly person", "foolish individual", "annoying person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "dummy",
+      "replacementOptions": ["uninformed person", "confused individual", "mistaken person"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "murder",
+      "replacementOptions": ["eliminate", "destroy", "end"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "murdered",
+      "replacementOptions": ["eliminated", "destroyed", "ended"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "die",
+      "replacementOptions": ["perish", "pass away", "expire"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "died",
+      "replacementOptions": ["perished", "passed away", "expired"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "dead",
+      "replacementOptions": ["lifeless", "passed away", "expired"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "heck",
+      "replacementOptions": ["goodness", "oh my", "dear me"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "dang",
+      "replacementOptions": ["darn", "oh no", "rats"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "dangit",
+      "replacementOptions": ["oh no", "rats", "bother"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "suicide",
+      "replacementOptions": ["self-harm", "self-injury", "self-destruction"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "sucks",
+      "replacementOptions": ["is terrible", "is awful", "is poor"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "stinks",
+      "replacementOptions": ["is unpleasant", "is poor", "is bad"],
+      "category": "Mild",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "weapon",
+      "replacementOptions": ["tool", "implement", "device"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "gun",
+      "replacementOptions": ["device", "tool", "implement"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "knife",
+      "replacementOptions": ["tool", "implement", "utensil"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "crud",
+      "replacementOptions": ["stuff", "junk", "mess"],
+      "category": "Mild",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "drat",
+      "replacementOptions": ["oh no", "bother", "rats"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "shoot",
+      "replacementOptions": ["launch", "fire", "discharge"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "shot",
+      "replacementOptions": ["launched", "fired", "discharged"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "geez",
+      "replacementOptions": ["goodness", "oh my", "wow"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "gosh",
+      "replacementOptions": ["goodness", "oh my", "wow"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "stab",
+      "replacementOptions": ["pierce", "poke", "puncture"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "stabbed",
+      "replacementOptions": ["pierced", "poked", "punctured"],
+      "category": "Inappropriate",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "jeez",
+      "replacementOptions": ["goodness", "oh my", "wow"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    },
+    {
+      "originalWord": "darnit",
+      "replacementOptions": ["oh no", "bother", "rats"],
+      "category": "Mild",
+      "partOfSpeech": "Interjection"
+    }
+  ]
+} 

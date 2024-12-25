@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PoRemoveBad.Mobile.MainPage"
+             Title="Text Sanitizer">
+
+    <ScrollView>
+        <Grid Padding="20" RowSpacing="20" ColumnSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Input Section -->
+            <Label Grid.Row="0" 
+                   Text="Input Text" 
+                   Style="{StaticResource Headline}"
+                   Margin="0,0,0,10"/>
+
+            <Editor Grid.Row="1"
+                    x:Name="InputEditor"
+                    Placeholder="Enter text to process..."
+                    AutoSize="TextChanges"
+                    TextChanged="OnInputTextChanged"/>
+
+            <!-- Process Button -->
+            <HorizontalStackLayout Grid.Row="2" Spacing="10">
+                <Button x:Name="ProcessButton"
+                        Text="Process Text"
+                        Clicked="OnProcessClicked"
+                        IsEnabled="False"/>
+
+                <Button x:Name="ExportTxtButton"
+                        Text="Export as TXT"
+                        Clicked="OnExportTxtClicked"
+                        IsEnabled="False"/>
+
+                <Button x:Name="ExportHtmlButton"
+                        Text="Export as HTML"
+                        Clicked="OnExportHtmlClicked"
+                        IsEnabled="False"/>
+
+                <Button x:Name="ExportJsonButton"
+                        Text="Export as JSON"
+                        Clicked="OnExportJsonClicked"
+                        IsEnabled="False"/>
+            </HorizontalStackLayout>
+
+            <!-- Output Section -->
+            <Label Grid.Row="3" 
+                   Text="Processed Text" 
+                   Style="{StaticResource Headline}"
+                   IsVisible="{Binding HasProcessedText}"
+                   Margin="0,20,0,10"/>
+
+            <Editor Grid.Row="4"
+                    x:Name="OutputEditor"
+                    IsReadOnly="True"
+                    IsVisible="{Binding HasProcessedText}"
+                    AutoSize="TextChanges"/>
+
+            <!-- Statistics Section -->
+            <Frame Grid.Row="3" Grid.Column="1"
+                   IsVisible="{Binding HasStatistics}"
+                   Padding="15"
+                   BorderColor="LightGray">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Statistics" 
+                           Style="{StaticResource Headline}"/>
+                    
+                    <Grid ColumnSpacing="10" RowSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label Grid.Row="0" Grid.Column="0" Text="Total Words:"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding TotalWords}"/>
+                        
+                        <Label Grid.Row="1" Grid.Column="0" Text="Total Characters:"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding TotalCharacters}"/>
+                        
+                        <Label Grid.Row="2" Grid.Column="0" Text="Replaced Words:"/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding ReplacedWordsCount}"/>
+                        
+                        <Label Grid.Row="3" Grid.Column="0" Text="Sentences:"/>
+                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding SentenceCount}"/>
+                        
+                        <Label Grid.Row="4" Grid.Column="0" Text="Paragraphs:"/>
+                        <Label Grid.Row="4" Grid.Column="1" Text="{Binding ParagraphCount}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

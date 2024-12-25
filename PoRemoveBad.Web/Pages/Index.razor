@@ -1,0 +1,192 @@
+﻿@page "/"
+@inject ITextProcessingService TextProcessingService
+@inject IExportService ExportService
+@inject ToastService ToastService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Text Sanitizer</PageTitle>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-4">
+                <h3>Input Text</h3>
+                <textarea class="form-control" rows="8" @bind="inputText" @bind:event="oninput"></textarea>
+                <div class="text-muted small mt-1">
+                    Characters: @(inputText?.Length ?? 0)
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <button class="btn btn-primary" @onclick="ProcessText" disabled="@(isProcessing || string.IsNullOrWhiteSpace(inputText))">
+                    @if (isProcessing)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="ms-1">Processing...</span>
+                    }
+                    else
+                    {
+                        <span>Process Text</span>
+                    }
+                </button>
+
+                @if (statistics != null)
+                {
+                    <div class="btn-group ms-2">
+                        @foreach (var format in ExportService.GetSupportedFormats())
+                        {
+                            <button class="btn btn-outline-secondary" @onclick="() => ExportText(format)">
+                                Export as @format.ToUpper()
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(processedText))
+            {
+                <div class="mb-4">
+                    <h3>Processed Text</h3>
+                    <div class="form-control bg-light" style="min-height: 200px; white-space: pre-wrap;">
+                        @processedText
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            @if (statistics != null)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-7">Total Words:</dt>
+                            <dd class="col-sm-5">@statistics.TotalWords</dd>
+
+                            <dt class="col-sm-7">Total Characters:</dt>
+                            <dd class="col-sm-5">@statistics.TotalCharacters</dd>
+
+                            <dt class="col-sm-7">Replaced Words:</dt>
+                            <dd class="col-sm-5">@statistics.ReplacedWordsCount</dd>
+
+                            <dt class="col-sm-7">Sentences:</dt>
+                            <dd class="col-sm-5">@statistics.SentenceCount</dd>
+
+                            <dt class="col-sm-7">Paragraphs:</dt>
+                            <dd class="col-sm-5">@statistics.ParagraphCount</dd>
+                        </dl>
+
+                        @if (statistics.ReplacementFrequency.Any())
+                        {
+                            <h6 class="mt-4 mb-3">Top Replaced Words</h6>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var word in statistics.ReplacementFrequency.OrderByDescending(x => x.Value).Take(5))
+                                {
+                                    <li><strong>@word.Key</strong>: @word.Value times</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? inputText;
+    private string? processedText;
+    private TextStatistics? statistics;
+    private bool isProcessing;
+    private bool isInitialized;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!isInitialized)
+        {
+            try
+            {
+                await TextProcessingService.InitializeDictionaryAsync();
+                isInitialized = true;
+                ToastService.ShowSuccess("Text sanitizer is ready to use!");
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowError("Failed to initialize text sanitizer", "Initialization Error");
+                Console.WriteLine($"Error initializing: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task ProcessText()
+    {
+        if (string.IsNullOrWhiteSpace(inputText)) return;
+
+        try
+        {
+            isProcessing = true;
+            var progress = new Progress<double>();
+            var result = await TextProcessingService.ProcessTextAsync(inputText, progress);
+            processedText = result.ProcessedText;
+            statistics = result.Statistics;
+
+            if (statistics.ReplacedWordsCount > 0)
+            {
+                ToastService.ShowSuccess($"Successfully replaced {statistics.ReplacedWordsCount} inappropriate words.", "Processing Complete");
+            }
+            else
+            {
+                ToastService.ShowInfo("No inappropriate words found in the text.", "Processing Complete");
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Failed to process text. Please try again.", "Processing Error");
+            Console.WriteLine($"Error processing text: {ex.Message}");
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private async Task ExportText(string format)
+    {
+        if (processedText == null || statistics == null) return;
+
+        try
+        {
+            var fileBytes = await ExportService.ExportToFileAsync(processedText, statistics, format);
+            var fileName = format.ToLower() switch
+            {
+                "txt" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.txt",
+                "html" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.html",
+                "json" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.json",
+                _ => ExportService.GetDefaultFileName()
+            };
+
+            // Convert the byte array to a base64 string for downloading
+            var base64 = Convert.ToBase64String(fileBytes);
+            var mimeType = format.ToLower() switch
+            {
+                "txt" => "text/plain",
+                "html" => "text/html",
+                "json" => "application/json",
+                _ => "text/plain"
+            };
+
+            // Use JSRuntime to trigger the file download
+            await JSRuntime.InvokeVoidAsync("downloadFileFromBase64", fileName, base64, mimeType);
+            
+            ToastService.ShowSuccess($"Successfully exported text as {format.ToUpper()}", "Export Complete");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Failed to export text as {format.ToUpper()}", "Export Error");
+            Console.WriteLine($"Error exporting text: {ex.Message}");
+        }
+    }
+}

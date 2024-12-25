@@ -1,0 +1,97 @@
+@inject ToastService ToastService
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    @foreach (var toast in _toasts)
+    {
+        <div class="toast show @GetToastClass(toast.Level)" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <span class="me-1">@GetToastIcon(toast.Level)</span>
+                <strong class="me-auto">@(string.IsNullOrEmpty(toast.Title) ? GetToastTitle(toast.Level) : toast.Title)</strong>
+                <small>@GetTimeDisplay(toast.TimeStamp)</small>
+                <button type="button" class="btn-close" @onclick="() => RemoveToast(toast.Id)"></button>
+            </div>
+            <div class="toast-body">
+                @toast.Message
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ToastMessage> _toasts = new();
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnShow += ShowToast;
+        ToastService.OnHide += HideToast;
+    }
+
+    public void Dispose()
+    {
+        ToastService.OnShow -= ShowToast;
+        ToastService.OnHide -= HideToast;
+    }
+
+    private void ShowToast(ToastMessage toast)
+    {
+        _toasts.Add(toast);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HideToast(Guid toastId)
+    {
+        _toasts.RemoveAll(t => t.Id == toastId);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void RemoveToast(Guid toastId)
+    {
+        ToastService.HideToast(toastId);
+    }
+
+    private string GetToastClass(ToastLevel level)
+    {
+        return level switch
+        {
+            ToastLevel.Info => "bg-info text-dark",
+            ToastLevel.Success => "bg-success text-white",
+            ToastLevel.Warning => "bg-warning text-dark",
+            ToastLevel.Error => "bg-danger text-white",
+            _ => "bg-info text-dark"
+        };
+    }
+
+    private string GetToastIcon(ToastLevel level)
+    {
+        return level switch
+        {
+            ToastLevel.Info => "ℹ️",
+            ToastLevel.Success => "✅",
+            ToastLevel.Warning => "⚠️",
+            ToastLevel.Error => "❌",
+            _ => "ℹ️"
+        };
+    }
+
+    private string GetToastTitle(ToastLevel level)
+    {
+        return level switch
+        {
+            ToastLevel.Info => "Information",
+            ToastLevel.Success => "Success",
+            ToastLevel.Warning => "Warning",
+            ToastLevel.Error => "Error",
+            _ => "Information"
+        };
+    }
+
+    private string GetTimeDisplay(DateTime timestamp)
+    {
+        var diff = DateTime.Now - timestamp;
+        if (diff.TotalSeconds < 60)
+            return "just now";
+        if (diff.TotalMinutes < 60)
+            return $"{Math.Floor(diff.TotalMinutes)}m ago";
+        return timestamp.ToString("HH:mm");
+    }
+} 
