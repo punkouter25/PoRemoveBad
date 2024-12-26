@@ -11,25 +11,34 @@ public partial class TextProcessingService : ITextProcessingService
     private readonly ConcurrentDictionary<string, WordReplacement> _wordDictionary = new(StringComparer.OrdinalIgnoreCase);
     private bool _isInitialized;
     private static readonly Random _random = new();
+    private string _currentDictionaryType = "default";
 
     public bool IsInitialized => _isInitialized;
+    public string CurrentDictionaryType => _currentDictionaryType;
 
     [GeneratedRegex(@"\b\w+\b")]
     private static partial Regex WordRegex();
 
-    public async Task InitializeDictionaryAsync()
+    public async Task InitializeDictionaryAsync(string dictionaryType = "default")
     {
-        if (_isInitialized) return;
-
         await Task.Run(async () =>
         {
             try
             {
+                _wordDictionary.Clear();
+                _isInitialized = false;
+                
                 var assembly = Assembly.GetExecutingAssembly();
-                using var stream = assembly.GetManifestResourceStream("PoRemoveBad.Core.Resources.word_replacements.json");
+                var resourceName = dictionaryType.ToLower() switch
+                {
+                    "buzzwords" => "PoRemoveBad.Core.Resources.word_replacements_buzzwords.json",
+                    _ => "PoRemoveBad.Core.Resources.word_replacements.json"
+                };
+
+                using var stream = assembly.GetManifestResourceStream(resourceName);
                 
                 if (stream == null)
-                    throw new InvalidOperationException("Could not find embedded word replacements resource.");
+                    throw new InvalidOperationException($"Could not find embedded word replacements resource: {resourceName}");
 
                 var data = await JsonSerializer.DeserializeAsync<WordReplacementData>(stream);
                 
@@ -41,11 +50,12 @@ public partial class TextProcessingService : ITextProcessingService
                     _wordDictionary.TryAdd(entry.OriginalWord, entry.ToWordReplacement());
                 }
 
+                _currentDictionaryType = dictionaryType;
                 _isInitialized = true;
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Failed to initialize word replacements.", ex);
+                throw new InvalidOperationException($"Failed to initialize word replacements for type {dictionaryType}.", ex);
             }
         });
     }

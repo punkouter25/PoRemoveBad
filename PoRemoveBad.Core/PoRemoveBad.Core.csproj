@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\word_replacements.json" />
+    <EmbeddedResource Include="Resources\word_replacements_buzzwords.json" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,154 @@
+{
+  "words": [
+    {
+      "originalWord": "synergy",
+      "replacementOptions": ["collaboration", "teamwork", "cooperation", "partnership"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "leverage",
+      "replacementOptions": ["use", "utilize", "employ", "apply"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "paradigm",
+      "replacementOptions": ["model", "approach", "framework", "method"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "disruptive",
+      "replacementOptions": ["innovative", "groundbreaking", "revolutionary", "transformative"],
+      "category": "Buzzword",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "bandwidth",
+      "replacementOptions": ["capacity", "time", "resources", "availability"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "circle back",
+      "replacementOptions": ["follow up", "return to", "revisit", "discuss later"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "touch base",
+      "replacementOptions": ["meet", "connect", "check in", "talk"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "actionable",
+      "replacementOptions": ["practical", "doable", "feasible", "achievable"],
+      "category": "Buzzword",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "deliverable",
+      "replacementOptions": ["result", "output", "product", "outcome"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "streamline",
+      "replacementOptions": ["simplify", "optimize", "improve", "enhance"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "incentivize",
+      "replacementOptions": ["motivate", "encourage", "reward", "inspire"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "drill down",
+      "replacementOptions": ["examine", "analyze", "investigate", "study"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "low hanging fruit",
+      "replacementOptions": ["easy wins", "simple tasks", "quick results", "obvious targets"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "pivot",
+      "replacementOptions": ["change direction", "adapt", "shift", "adjust"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "agile",
+      "replacementOptions": ["flexible", "adaptable", "responsive", "nimble"],
+      "category": "Buzzword",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "scalable",
+      "replacementOptions": ["expandable", "growable", "adaptable", "flexible"],
+      "category": "Buzzword",
+      "partOfSpeech": "Adjective"
+    },
+    {
+      "originalWord": "pain point",
+      "replacementOptions": ["problem", "challenge", "difficulty", "obstacle"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "ecosystem",
+      "replacementOptions": ["environment", "system", "network", "community"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "wheelhouse",
+      "replacementOptions": ["expertise", "specialty", "strength", "skill set"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "deep dive",
+      "replacementOptions": ["detailed analysis", "thorough review", "careful study", "close examination"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "ideate",
+      "replacementOptions": ["think", "brainstorm", "create", "develop ideas"],
+      "category": "Buzzword",
+      "partOfSpeech": "Verb"
+    },
+    {
+      "originalWord": "mindshare",
+      "replacementOptions": ["attention", "awareness", "consideration", "mindspace"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "value add",
+      "replacementOptions": ["benefit", "improvement", "enhancement", "advantage"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "thought leader",
+      "replacementOptions": ["expert", "authority", "specialist", "innovator"],
+      "category": "Buzzword",
+      "partOfSpeech": "Noun"
+    },
+    {
+      "originalWord": "holistic",
+      "replacementOptions": ["comprehensive", "complete", "all-encompassing", "thorough"],
+      "category": "Buzzword",
+      "partOfSpeech": "Adjective"
+    }
+  ]
+} 

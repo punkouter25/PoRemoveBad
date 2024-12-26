@@ -10,6 +10,14 @@
     <div class="row">
         <div class="col-md-8">
             <div class="mb-4">
+                <div class="btn-group mb-3" role="group">
+                    <input type="radio" class="btn-check" name="dictionaryType" id="default" value="default" checked="@(dictionaryType == "default")" @onchange="@(async () => await SwitchDictionary("default"))" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="default">Remove Bad Words</label>
+
+                    <input type="radio" class="btn-check" name="dictionaryType" id="buzzwords" value="buzzwords" checked="@(dictionaryType == "buzzwords")" @onchange="@(async () => await SwitchDictionary("buzzwords"))" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buzzwords">Replace Buzzwords</label>
+                </div>
+
                 <h3>Input Text</h3>
                 <textarea class="form-control" rows="8" @bind="inputText" @bind:event="oninput"></textarea>
                 <div class="text-muted small mt-1">
@@ -102,6 +110,7 @@
     private TextStatistics? statistics;
     private bool isProcessing;
     private bool isInitialized;
+    private string dictionaryType = "default";
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,6 +127,25 @@
                 ToastService.ShowError("Failed to initialize text sanitizer", "Initialization Error");
                 Console.WriteLine($"Error initializing: {ex.Message}");
             }
+        }
+    }
+
+    private async Task SwitchDictionary(string newType)
+    {
+        try
+        {
+            dictionaryType = newType;
+            await TextProcessingService.InitializeDictionaryAsync(newType);
+            ToastService.ShowSuccess($"Switched to {(newType == "default" ? "bad words removal" : "buzzwords replacement")} mode");
+            
+            // Clear the processed text when switching dictionaries
+            processedText = null;
+            statistics = null;
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Failed to switch dictionary type", "Switch Error");
+            Console.WriteLine($"Error switching dictionary: {ex.Message}");
         }
     }
 
