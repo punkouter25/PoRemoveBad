@@ -107,10 +107,10 @@ public partial class TextProcessingService : ITextProcessingService
 
         // Replace the highlight markers with actual HTML
         processedText = processedText
-            .Replace("[HIGHLIGHT]", "<mark style='background-color: yellow; border-radius: 3px; padding: 0 2px;'>")
+            .Replace("[HIGHLIGHT]", "<mark style=\"background-color: yellow; border-radius: 3px; padding: 0 2px;\">")
             .Replace("[/HIGHLIGHT]", "</mark>");
 
         statistics.GraphData = segments;
         return (processedText, statistics);
     }
-} 
+}
