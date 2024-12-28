@@ -1,34 +1,70 @@
 using System.Text;
 using PoRemoveBad.Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace PoRemoveBad.Core.Services;
 
+/// <summary>
+/// Service for exporting processed text and statistics to various file formats.
+/// </summary>
 public class ExportService : IExportService
 {
     private static readonly string[] SupportedFormats = { "txt", "html", "json" };
+    private readonly ILogger<ExportService> _logger;
 
+    public ExportService(ILogger<ExportService> logger)
+    {
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Gets the supported file formats for export.
+    /// </summary>
+    /// <returns>An enumerable of supported file formats.</returns>
     public IEnumerable<string> GetSupportedFormats() => SupportedFormats;
 
+    /// <summary>
+    /// Gets the default file name for the exported file.
+    /// </summary>
+    /// <returns>The default file name.</returns>
     public string GetDefaultFileName() => 
         $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
 
+    /// <summary>
+    /// Exports the processed text and statistics to a file in the specified format.
+    /// </summary>
+    /// <param name="processedText">The processed text to export.</param>
+    /// <param name="statistics">The text statistics to include in the export.</param>
+    /// <param name="format">The file format for the export (default is "txt").</param>
+    /// <returns>A task representing the asynchronous operation, with a byte array containing the file content.</returns>
     public async Task<byte[]> ExportToFileAsync(string processedText, TextStatistics statistics, string format = "txt")
     {
         if (!SupportedFormats.Contains(format.ToLower()))
-            throw new ArgumentException($"Unsupported format: {format}");
-
-        return await Task.Run(() =>
         {
-            var content = format.ToLower() switch
-            {
-                "txt" => GenerateTxtContent(processedText, statistics),
-                "html" => GenerateHtmlContent(processedText, statistics),
-                "json" => GenerateJsonContent(processedText, statistics),
-                _ => throw new ArgumentException($"Unsupported format: {format}")
-            };
+            _logger.LogError("Unsupported format: {Format}", format);
+            throw new ArgumentException($"Unsupported format: {format}");
+        }
 
-            return Encoding.UTF8.GetBytes(content);
-        });
+        try
+        {
+            return await Task.Run(() =>
+            {
+                var content = format.ToLower() switch
+                {
+                    "txt" => GenerateTxtContent(processedText, statistics),
+                    "html" => GenerateHtmlContent(processedText, statistics),
+                    "json" => GenerateJsonContent(processedText, statistics),
+                    _ => throw new ArgumentException($"Unsupported format: {format}")
+                };
+
+                return Encoding.UTF8.GetBytes(content);
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to export file in format: {Format}", format);
+            throw new InvalidOperationException($"Failed to export file in format: {format}", ex);
+        }
     }
 
     private static string GenerateTxtContent(string processedText, TextStatistics statistics)
@@ -128,4 +164,4 @@ public class ExportService : IExportService
             WriteIndented = true
         });
     }
-} 
+}

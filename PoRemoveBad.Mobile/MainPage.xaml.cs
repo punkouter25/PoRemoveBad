@@ -5,6 +5,9 @@ using PoRemoveBad.Mobile.ViewModels;
 
 namespace PoRemoveBad.Mobile;
 
+/// <summary>
+/// Represents the main page of the mobile application.
+/// </summary>
 public partial class MainPage : ContentPage
 {
 	private readonly ITextProcessingService _textProcessingService;
@@ -12,6 +15,11 @@ public partial class MainPage : ContentPage
 	private readonly MainPageViewModel _viewModel;
 	private string _processedText;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="MainPage"/> class.
+	/// </summary>
+	/// <param name="textProcessingService">The text processing service.</param>
+	/// <param name="exportService">The export service.</param>
 	public MainPage(ITextProcessingService textProcessingService, IExportService exportService)
 	{
 		try
@@ -39,6 +47,9 @@ public partial class MainPage : ContentPage
 		}
 	}
 
+	/// <summary>
+	/// Initializes the text processing dictionary asynchronously.
+	/// </summary>
 	private async void InitializeAsync()
 	{
 		try
@@ -54,6 +65,11 @@ public partial class MainPage : ContentPage
 		}
 	}
 
+	/// <summary>
+	/// Handles the input text changed event.
+	/// </summary>
+	/// <param name="sender">The event sender.</param>
+	/// <param name="e">The event arguments.</param>
 	private void OnInputTextChanged(object sender, TextChangedEventArgs e)
 	{
 		ProcessButton.IsEnabled = !string.IsNullOrWhiteSpace(e.NewTextValue);
@@ -65,6 +81,10 @@ public partial class MainPage : ContentPage
 		}
 	}
 
+	/// <summary>
+	/// Updates the output display with the specified text.
+	/// </summary>
+	/// <param name="text">The text to display.</param>
 	private void UpdateOutputDisplay(string text)
 	{
 		var htmlContent = $@"
@@ -100,6 +120,11 @@ public partial class MainPage : ContentPage
 		});
 	}
 
+	/// <summary>
+	/// Handles the process button click event.
+	/// </summary>
+	/// <param name="sender">The event sender.</param>
+	/// <param name="e">The event arguments.</param>
 	private async void OnProcessClicked(object sender, EventArgs e)
 	{
 		if (string.IsNullOrWhiteSpace(InputEditor.Text)) return;
@@ -148,21 +173,40 @@ public partial class MainPage : ContentPage
 		}
 	}
 
+	/// <summary>
+	/// Handles the export to TXT button click event.
+	/// </summary>
+	/// <param name="sender">The event sender.</param>
+	/// <param name="e">The event arguments.</param>
 	private async void OnExportTxtClicked(object sender, EventArgs e)
 	{
 		await ExportFile("txt");
 	}
 
+	/// <summary>
+	/// Handles the export to HTML button click event.
+	/// </summary>
+	/// <param name="sender">The event sender.</param>
+	/// <param name="e">The event arguments.</param>
 	private async void OnExportHtmlClicked(object sender, EventArgs e)
 	{
 		await ExportFile("html");
 	}
 
+	/// <summary>
+	/// Handles the export to JSON button click event.
+	/// </summary>
+	/// <param name="sender">The event sender.</param>
+	/// <param name="e">The event arguments.</param>
 	private async void OnExportJsonClicked(object sender, EventArgs e)
 	{
 		await ExportFile("json");
 	}
 
+	/// <summary>
+	/// Exports the processed text to a file in the specified format.
+	/// </summary>
+	/// <param name="format">The file format.</param>
 	private async Task ExportFile(string format)
 	{
 		if (string.IsNullOrEmpty(_processedText)) return;
@@ -198,4 +242,3 @@ public partial class MainPage : ContentPage
 		}
 	}
 }
-
