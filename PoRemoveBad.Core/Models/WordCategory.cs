@@ -28,5 +28,10 @@ public enum WordCategory
     /// <summary>
     /// Mild category.
     /// </summary>
-    Mild
+    Mild,
+
+    /// <summary>
+    /// Buzzword category.
+    /// </summary>
+    Buzzword
 }

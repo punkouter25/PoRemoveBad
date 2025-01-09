@@ -26,6 +26,21 @@ public enum PartOfSpeech
     Adverb,
 
     /// <summary>
+    /// Pronoun part of speech.
+    /// </summary>
+    Pronoun,
+
+    /// <summary>
+    /// Preposition part of speech.
+    /// </summary>
+    Preposition,
+
+    /// <summary>
+    /// Conjunction part of speech.
+    /// </summary>
+    Conjunction,
+
+    /// <summary>
     /// Interjection part of speech.
     /// </summary>
     Interjection,

@@ -58,29 +58,61 @@ public partial class TextProcessingService : ITextProcessingService
                     _ => "PoRemoveBad.Core.Resources.word_replacements.json"
                 };
 
-                using var stream = assembly.GetManifestResourceStream(resourceName);
-                
-                if (stream == null)
-                    throw new InvalidOperationException($"Could not find embedded word replacements resource: {resourceName}");
+                // Add detailed logging for debugging
+                var resources = assembly.GetManifestResourceNames();
+                _logger.LogInformation("Available embedded resources:");
+                foreach (var resource in resources)
+                {
+                    _logger.LogInformation("- {Resource}", resource);
+                }
+                _logger.LogInformation("Attempting to load resource: {ResourceName}", resourceName);
 
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream == null)
+                {
+                    _logger.LogError("Resource not found: {ResourceName}", resourceName);
+                    throw new FileNotFoundException($"Resource {resourceName} not found");
+                }
+
+                using var reader = new StreamReader(stream);
+                var jsonContent = await reader.ReadToEndAsync();
+                _logger.LogInformation("Raw JSON content: {Content}", jsonContent);
+                stream.Position = 0; // Reset stream position for deserialization
+
+                _logger.LogInformation("Resource found, attempting to deserialize");
                 var data = await JsonSerializer.DeserializeAsync<WordReplacementData>(stream);
                 
                 if (data == null)
+                {
+                    _logger.LogError("Deserialization resulted in null data");
                     throw new InvalidOperationException("Failed to deserialize word replacements data.");
+                }
+
+                _logger.LogInformation("Successfully deserialized data with {WordCount} words", data.Words?.Count ?? 0);
+
+                if (data.Words == null || data.Words.Count == 0)
+                {
+                    _logger.LogError("No words found in the deserialized data");
+                    throw new InvalidOperationException("No words found in the dictionary file.");
+                }
 
                 foreach (var entry in data.Words)
                 {
-                    _wordDictionary.TryAdd(entry.OriginalWord, entry.ToWordReplacement());
+                    if (!_wordDictionary.TryAdd(entry.OriginalWord, entry.ToWordReplacement()))
+                    {
+                        _logger.LogWarning("Failed to add word: {Word}", entry.OriginalWord);
+                    }
                 }
 
                 _currentDictionaryType = dictionaryType;
                 _isInitialized = true;
-                _logger.LogInformation("Dictionary of type {DictionaryType} initialized successfully", dictionaryType);
+                _logger.LogInformation("Dictionary initialized with {Count} words", _wordDictionary.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to initialize dictionary of type {DictionaryType}", dictionaryType);
-                throw new InvalidOperationException($"Failed to initialize word replacements for type {dictionaryType}.", ex);
+                _logger.LogError(ex, "Failed to initialize dictionary of type {DictionaryType}. Error details: {ErrorMessage}", 
+                    dictionaryType, ex.ToString());
+                throw;
             }
         });
     }

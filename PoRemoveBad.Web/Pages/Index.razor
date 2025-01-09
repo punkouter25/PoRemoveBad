@@ -142,9 +142,14 @@
             processedText = null;
             statistics = null;
         }
+        catch (FileNotFoundException ex)
+        {
+            ToastService.ShowError($"Dictionary file not found: {ex.Message}", "Switch Error");
+            Console.WriteLine($"Dictionary file not found: {ex.Message}");
+        }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Failed to switch dictionary type", "Switch Error");
+            ToastService.ShowError($"Failed to switch dictionary type: {ex.Message}", "Switch Error");
             Console.WriteLine($"Error switching dictionary: {ex.Message}");
         }
     }
