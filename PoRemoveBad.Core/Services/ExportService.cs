@@ -1,3 +1,4 @@
+using System.Net; // Added for WebUtility
 using System.Text;
 using PoRemoveBad.Core.Models;
 using Microsoft.Extensions.Logging;
@@ -110,7 +111,9 @@ public class ExportService : IExportService
         sb.AppendLine("<body>");
         
         sb.AppendLine("<h1>Cleaned Text</h1>");
-        sb.AppendLine($"<div style='white-space: pre-wrap;'>{processedText}</div>");
+        // Encode the processed text before inserting into HTML to prevent errors
+        var encodedProcessedText = WebUtility.HtmlEncode(processedText); 
+        sb.AppendLine($"<div style='white-space: pre-wrap;'>{encodedProcessedText}</div>"); 
         
         sb.AppendLine("<h2>Statistics</h2>");
         sb.AppendLine("<div class='stats'>");

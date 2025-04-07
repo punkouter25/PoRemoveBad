@@ -19,7 +19,14 @@
                 </div>
 
                 <h3>Input Text</h3>
-                <textarea class="form-control" rows="8" @bind="inputText" @bind:event="oninput"></textarea>
+                
+                <!-- File Upload Input -->
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">Or Upload a File (.txt, .md - Max 5MB):</label>
+                    <InputFile id="fileInput" class="form-control" OnChange="LoadFile" accept=".txt,.md" />
+                </div>
+
+                <textarea class="form-control" rows="8" @bind="inputText" @bind:event="oninput" placeholder="Paste your text here or upload a file..."></textarea>
                 <div class="text-muted small mt-1">
                     Characters: @(inputText?.Length ?? 0)
                 </div>
@@ -55,7 +62,7 @@
             {
                 <div class="mb-4">
                     <h3>Processed Text</h3>
-                    <div class="form-control bg-light" style="min-height: 200px; white-space: pre-wrap;">
+                    <div class="form-control" style="min-height: 200px; white-space: pre-wrap;">
                         @((MarkupString)processedText)
                     </div>
                 </div>
@@ -85,6 +92,12 @@
 
                             <dt class="col-sm-7">Paragraphs:</dt>
                             <dd class="col-sm-5">@statistics.ParagraphCount</dd>
+
+                            <dt class="col-sm-7">Reading Time:</dt>
+                            <dd class="col-sm-5">@($"{statistics.ReadingTimeMinutes:F1} min")</dd>
+
+                            <dt class="col-sm-7">Readability (FK):</dt>
+                            <dd class="col-sm-5">@($"{statistics.ReadabilityScore:F1}")</dd>
                         </dl>
 
                         @if (statistics.ReplacementFrequency.Any())
@@ -111,6 +124,7 @@
     private bool isProcessing;
     private bool isInitialized;
     private string dictionaryType = "default";
+    private const long MaxFileSize = 5 * 1024 * 1024; // 5MB limit for uploads
 
     protected override async Task OnInitializedAsync()
     {
@@ -220,6 +234,51 @@
         {
             ToastService.ShowError($"Failed to export text as {format.ToUpper()}", "Export Error");
             Console.WriteLine($"Error exporting text: {ex.Message}");
+        }
+    }
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        if (e.File == null) return;
+
+        var file = e.File;
+
+        // Validate file type
+        var allowedTypes = new[] { ".txt", ".md" };
+        var fileExtension = Path.GetExtension(file.Name)?.ToLowerInvariant();
+        if (string.IsNullOrEmpty(fileExtension) || !allowedTypes.Contains(fileExtension))
+        {
+            ToastService.ShowError($"Invalid file type. Please upload a {string.Join(" or ", allowedTypes)} file.", "Upload Error");
+            return;
+        }
+
+        // Validate file size
+        if (file.Size > MaxFileSize)
+        {
+            ToastService.ShowError($"File exceeds the maximum size limit of {MaxFileSize / (1024 * 1024)}MB.", "Upload Error");
+            return;
+        }
+
+        try
+        {
+            isProcessing = true; // Show loading indicator while reading
+            await using var stream = file.OpenReadStream(MaxFileSize);
+            using var reader = new StreamReader(stream);
+            inputText = await reader.ReadToEndAsync();
+            processedText = null; // Clear previous results
+            statistics = null;    // Clear previous stats
+            ToastService.ShowSuccess($"Successfully loaded '{file.Name}'.", "File Loaded");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error reading file: {ex.Message}", "Upload Error");
+            Console.WriteLine($"Error reading file: {ex.Message}");
+            inputText = string.Empty; // Clear input on error
+        }
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged(); // Ensure UI updates after async operation
         }
     }
 }

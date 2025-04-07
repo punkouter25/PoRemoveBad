@@ -43,6 +43,16 @@ public class TextStatistics
     public int ParagraphCount { get; set; }
 
     /// <summary>
+    /// Gets or sets the estimated reading time in minutes.
+    /// </summary>
+    public double ReadingTimeMinutes { get; set; } // Added for Reading Time
+
+    /// <summary>
+    /// Gets or sets the calculated readability score (e.g., Flesch-Kincaid).
+    /// </summary>
+    public double ReadabilityScore { get; set; } // Added for Readability Score
+
+    /// <summary>
     /// Represents a data point for graphing text processing statistics.
     /// </summary>
     public class GraphDataPoint

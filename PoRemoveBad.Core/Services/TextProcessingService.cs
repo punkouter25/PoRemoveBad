@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq; // Added for LINQ methods
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -35,6 +36,46 @@ public partial class TextProcessingService : ITextProcessingService
 
     [GeneratedRegex(@"\b\w+\b")]
     private static partial Regex WordRegex();
+
+    [GeneratedRegex(@"[aeiouy]+", RegexOptions.IgnoreCase)]
+    private static partial Regex VowelGroupRegex(); // Regex for vowel groups
+
+    /// <summary>
+    /// Estimates the number of syllables in a word using a simple heuristic.
+    /// </summary>
+    /// <param name="word">The word to analyze.</param>
+    /// <returns>An estimated syllable count.</returns>
+    private static int EstimateSyllables(string word)
+    {
+        if (string.IsNullOrWhiteSpace(word)) return 0;
+
+        word = word.ToLowerInvariant().Trim('\'', '"', '.', ',', '!', '?', ':', ';'); // Basic cleanup
+
+        if (word.Length <= 3) return 1; // Short words often have 1 syllable
+
+        var vowelGroups = VowelGroupRegex().Matches(word);
+        var syllableCount = vowelGroups.Count;
+
+        // Adjust for silent 'e' at the end
+        if (word.EndsWith("e") && !word.EndsWith("le") && syllableCount > 1 && !VowelGroupRegex().IsMatch(word[^2..^1]))
+        {
+            // Check if the second to last char is not a vowel before decrementing
+             if (!"aeiouy".Contains(word[^2]))
+             {
+                 syllableCount--;
+             }
+        }
+        // Adjust for 'le' ending if preceded by a consonant
+        else if (word.EndsWith("le") && word.Length > 2 && !"aeiouy".Contains(word[^3]))
+        {
+             // Already counted by vowel group regex, no change needed unless previous logic reduced it
+        }
+
+
+        // Ensure at least one syllable
+        return Math.Max(1, syllableCount);
+    }
+
 
     /// <summary>
     /// Initializes the word replacement dictionary asynchronously.
@@ -184,6 +225,52 @@ public partial class TextProcessingService : ITextProcessingService
             .Replace("[/HIGHLIGHT]", "</mark>");
 
         statistics.GraphData = segments;
+
+        // --- Calculate Enhanced Statistics ---
+        _logger.LogInformation("Calculating enhanced statistics...");
+
+        // 1. Calculate Total Syllables
+        long totalSyllables = 0;
+        foreach (Match wordMatch in words)
+        {
+            totalSyllables += EstimateSyllables(wordMatch.Value);
+        }
+        _logger.LogInformation("Total estimated syllables: {TotalSyllables}", totalSyllables);
+
+
+        // 2. Calculate Reading Time (Average 225 WPM)
+        const double wordsPerMinute = 225.0;
+        statistics.ReadingTimeMinutes = statistics.TotalWords > 0 ? statistics.TotalWords / wordsPerMinute : 0;
+        _logger.LogInformation("Estimated reading time: {ReadingTimeMinutes} minutes", statistics.ReadingTimeMinutes);
+
+
+        // 3. Calculate Readability Score (Flesch-Kincaid)
+        // Formula: 206.835 - 1.015 * (TotalWords / TotalSentences) - 84.6 * (TotalSyllables / TotalWords)
+        if (statistics.SentenceCount > 0 && statistics.TotalWords > 0)
+        {
+            try
+            {
+                 // Use double for calculations to maintain precision
+                double wordsPerSentence = (double)statistics.TotalWords / statistics.SentenceCount;
+                double syllablesPerWord = (double)totalSyllables / statistics.TotalWords;
+
+                statistics.ReadabilityScore = 206.835 - (1.015 * wordsPerSentence) - (84.6 * syllablesPerWord);
+                 _logger.LogInformation("Calculated Readability Score (FK): {ReadabilityScore}", statistics.ReadabilityScore);
+            }
+            catch (OverflowException ex)
+            {
+                 _logger.LogError(ex, "Overflow calculating readability score.");
+                 statistics.ReadabilityScore = 0; // Default on error
+            }
+        }
+        else
+        {
+            statistics.ReadabilityScore = 0; // Cannot calculate if no sentences or words
+             _logger.LogWarning("Cannot calculate readability score: Sentences={SentenceCount}, Words={WordCount}", statistics.SentenceCount, statistics.TotalWords);
+        }
+        // --- End Enhanced Statistics Calculation ---
+
+
         return (processedText, statistics);
     }
 }
