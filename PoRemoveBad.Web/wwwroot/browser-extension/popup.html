@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PoRemoveBad Text Analyzer</title>
+    <style>
+        body {
+            width: 400px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>PoRemoveBad Text Analyzer</h2>
+        <textarea id="textInput" placeholder="Enter text to analyze..."></textarea>
+        <button id="analyzeButton">Analyze Text</button>
+        <div class="loading" id="loadingIndicator">
+            Analyzing...
+        </div>
+        <div class="results" id="results">
+            <div id="sentimentResult"></div>
+            <div id="grammarResult"></div>
+            <div id="vocabularyResult"></div>
+            <div id="targetAudienceResult"></div>
+        </div>
+        <div class="error" id="errorMessage"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html> 

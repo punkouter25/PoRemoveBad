@@ -2,80 +2,60 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "clean (functions)",
+			"label": "build",
 			"command": "dotnet",
-			"args": [
-				"clean",
-				"/property:GenerateFullPaths=true",
-				"/consoleloggerparameters:NoSummary"
-			],
 			"type": "process",
-			"problemMatcher": "$msCompile",
-			"options": {
-				"cwd": "${workspaceFolder}/PoRemoveBad.Functions"
-			}
-		},
-		{
-			"label": "build (functions)",
-			"command": "dotnet",
 			"args": [
 				"build",
+				"${workspaceFolder}/PoRemoveBad.sln",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
-			"type": "process",
-			"dependsOn": "clean (functions)",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"problemMatcher": "$msCompile",
-			"options": {
-				"cwd": "${workspaceFolder}/PoRemoveBad.Functions"
-			}
+			"problemMatcher": "$msCompile"
 		},
 		{
-			"label": "clean release (functions)",
+			"label": "publish",
 			"command": "dotnet",
-			"args": [
-				"clean",
-				"--configuration",
-				"Release",
-				"/property:GenerateFullPaths=true",
-				"/consoleloggerparameters:NoSummary"
-			],
 			"type": "process",
-			"problemMatcher": "$msCompile",
-			"options": {
-				"cwd": "${workspaceFolder}/PoRemoveBad.Functions"
-			}
-		},
-		{
-			"label": "publish (functions)",
-			"command": "dotnet",
 			"args": [
 				"publish",
-				"--configuration",
-				"Release",
+				"${workspaceFolder}/PoRemoveBad.sln",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
-			"type": "process",
-			"dependsOn": "clean release (functions)",
-			"problemMatcher": "$msCompile",
-			"options": {
-				"cwd": "${workspaceFolder}/PoRemoveBad.Functions"
-			}
+			"problemMatcher": "$msCompile"
 		},
 		{
-			"type": "func",
-			"dependsOn": "build (functions)",
-			"options": {
-				"cwd": "${workspaceFolder}/PoRemoveBad.Functions/bin/Debug/net8.0"
-			},
-			"command": "host start",
-			"isBackground": true,
-			"problemMatcher": "$func-dotnet-watch"
+			"label": "watch",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"run",
+				"--project",
+				"${workspaceFolder}/PoRemoveBad.Web/PoRemoveBad.Web.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "clean",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"clean",
+				"${workspaceFolder}/PoRemoveBad.sln"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "restore",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"restore",
+				"${workspaceFolder}/PoRemoveBad.sln"
+			],
+			"problemMatcher": "$msCompile"
 		}
 	]
 }

@@ -1,4 +1,5 @@
 @inject ToastService ToastService
+@implements IDisposable
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     @foreach (var toast in _toasts)
@@ -94,4 +95,4 @@
             return $"{Math.Floor(diff.TotalMinutes)}m ago";
         return timestamp.ToString("HH:mm");
     }
-} 
+}
