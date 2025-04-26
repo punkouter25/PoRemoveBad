@@ -1,0 +1,343 @@
+@page "/diag"
+@using System.Net.Http.Json
+@using Microsoft.Extensions.Logging
+@inject ILogger<Diag> Logger
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<PageTitle>PoRemoveBad - Diagnostics</PageTitle>
+
+<h1>System Diagnostics</h1>
+
+<div class="alert alert-info">
+    Running diagnostic checks. Please wait...
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Connectivity Status</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var check in _diagnosticChecks)
+                    {
+                        <tr>
+                            <td>@check.Name</td>
+                            <td>
+                                @if (check.IsRunning)
+                                {
+                                    <span class="badge bg-warning">Running...</span>
+                                }
+                                else if (check.IsSuccess)
+                                {
+                                    <span class="badge bg-success">Success</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Failed</span>
+                                }
+                            </td>
+                            <td>@check.Details</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <h3>Environment Information</h3>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Base URL</td>
+                        <td>@NavigationManager.BaseUri</td>
+                    </tr>
+                    <tr>
+                        <td>Browser</td>
+                        <td>@_browserInfo</td>
+                    </tr>
+                    <tr>
+                        <td>.NET Runtime</td>
+                        <td>@_runtimeInfo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <h3>Log Information</h3>
+            <div class="log-container">
+                @foreach (var log in _logEntries)
+                {
+                    <div class="@GetLogClass(log.Level)">
+                        <strong>[@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")] [@log.Level]:</strong> @log.Message
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <a href="/" class="btn btn-primary">Return to Main Page</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<DiagnosticCheck> _diagnosticChecks = new();
+    private List<LogEntry> _logEntries = new();
+    private string _browserInfo = "Detecting...";
+    private string _runtimeInfo = ".NET 9.0";
+    private System.Threading.Timer? _timer;
+    private bool _diagnosticsComplete = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LogInfo("Diagnostics page loaded");
+        
+        // Initialize checks
+        _diagnosticChecks.Add(new DiagnosticCheck { Name = "API Connection", IsRunning = true });
+        _diagnosticChecks.Add(new DiagnosticCheck { Name = "Internet Connection", IsRunning = true });
+        _diagnosticChecks.Add(new DiagnosticCheck { Name = "Base URL Configuration", IsRunning = true });
+        _diagnosticChecks.Add(new DiagnosticCheck { Name = "Data Access", IsRunning = true });
+        
+        // Start diagnostics
+        _timer = new System.Threading.Timer(_ => RunDiagnosticsAsync(), null, 500, Timeout.Infinite);
+        
+        await base.OnInitializedAsync();
+    }
+
+    private async void RunDiagnosticsAsync()
+    {
+        try
+        {
+            // Check API connection
+            await CheckApiConnectionAsync();
+            
+            // Check internet connection
+            await CheckInternetConnectionAsync();
+            
+            // Check base URL configuration
+            CheckBaseUrlConfiguration();
+            
+            // Check data access
+            await CheckDataAccessAsync();
+            
+            // Log completion
+            LogInfo("All diagnostic checks completed");
+            _diagnosticsComplete = true;
+            
+            // Write to log.txt (handled on server-side)
+            try
+            {
+                await Http.PostAsJsonAsync("api/diagnostics/log", _logEntries);
+            }
+            catch (Exception ex)
+            {
+                LogError($"Failed to write to log.txt: {ex.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogError($"Error during diagnostics: {ex.Message}");
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CheckApiConnectionAsync()
+    {
+        var check = _diagnosticChecks.First(c => c.Name == "API Connection");
+        try
+        {
+            LogInfo("Checking API connection...");
+            try
+            {
+                var response = await Http.GetAsync("api/health");
+                if (response.IsSuccessStatusCode)
+                {
+                    check.IsSuccess = true;
+                    check.Details = "API is responding correctly.";
+                    LogInfo("API connection successful");
+                }
+                else
+                {
+                    check.IsSuccess = false;
+                    check.Details = $"API returned status: {response.StatusCode}";
+                    LogWarning($"API connection failed with status: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                check.IsSuccess = false;
+                check.Details = $"Error: {ex.Message}";
+                LogError($"API connection error: {ex.Message}");
+            }
+        }
+        finally
+        {
+            check.IsRunning = false;
+        }
+    }
+
+    private async Task CheckInternetConnectionAsync()
+    {
+        var check = _diagnosticChecks.First(c => c.Name == "Internet Connection");
+        try
+        {
+            LogInfo("Checking internet connection...");
+            try
+            {
+                // This is just a check within the Blazor WASM app to see if external connectivity works
+                var response = await Http.GetAsync("https://httpstat.us/200");
+                if (response.IsSuccessStatusCode)
+                {
+                    check.IsSuccess = true;
+                    check.Details = "Internet connection is working.";
+                    LogInfo("Internet connection successful");
+                }
+                else
+                {
+                    check.IsSuccess = false;
+                    check.Details = $"HTTP request returned: {response.StatusCode}";
+                    LogWarning($"Internet connection check failed: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                check.IsSuccess = false;
+                check.Details = $"Error: {ex.Message}";
+                LogError($"Internet connection error: {ex.Message}");
+            }
+        }
+        finally
+        {
+            check.IsRunning = false;
+        }
+    }
+
+    private void CheckBaseUrlConfiguration()
+    {
+        var check = _diagnosticChecks.First(c => c.Name == "Base URL Configuration");
+        try
+        {
+            LogInfo("Checking base URL configuration...");
+            var baseUrl = NavigationManager.BaseUri;
+            
+            if (!string.IsNullOrEmpty(baseUrl) && Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute))
+            {
+                check.IsSuccess = true;
+                check.Details = $"Base URL is properly configured: {baseUrl}";
+                LogInfo($"Base URL configuration is valid: {baseUrl}");
+            }
+            else
+            {
+                check.IsSuccess = false;
+                check.Details = $"Base URL may be invalid: {baseUrl}";
+                LogWarning($"Base URL configuration may be invalid: {baseUrl}");
+            }
+        }
+        catch (Exception ex)
+        {
+            check.IsSuccess = false;
+            check.Details = $"Error: {ex.Message}";
+            LogError($"Base URL configuration check error: {ex.Message}");
+        }
+        finally
+        {
+            check.IsRunning = false;
+        }
+    }
+
+    private async Task CheckDataAccessAsync()
+    {
+        var check = _diagnosticChecks.First(c => c.Name == "Data Access");
+        try
+        {
+            LogInfo("Checking data access...");
+            try
+            {
+                var response = await Http.GetAsync("api/textanalysis/status");
+                if (response.IsSuccessStatusCode)
+                {
+                    check.IsSuccess = true;
+                    check.Details = "Data access is working properly.";
+                    LogInfo("Data access check successful");
+                }
+                else
+                {
+                    check.IsSuccess = false;
+                    check.Details = $"Data access returned status: {response.StatusCode}";
+                    LogWarning($"Data access check failed: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                check.IsSuccess = false;
+                check.Details = $"Error: {ex.Message}";
+                LogError($"Data access check error: {ex.Message}");
+            }
+        }
+        finally
+        {
+            check.IsRunning = false;
+        }
+    }
+    
+    private void LogInfo(string message)
+    {
+        _logEntries.Add(new LogEntry { Level = "INFO", Message = message, Timestamp = DateTime.Now });
+        Logger.LogInformation(message);
+    }
+    
+    private void LogWarning(string message)
+    {
+        _logEntries.Add(new LogEntry { Level = "WARNING", Message = message, Timestamp = DateTime.Now });
+        Logger.LogWarning(message);
+    }
+    
+    private void LogError(string message)
+    {
+        _logEntries.Add(new LogEntry { Level = "ERROR", Message = message, Timestamp = DateTime.Now });
+        Logger.LogError(message);
+    }
+    
+    private string GetLogClass(string level)
+    {
+        return level switch
+        {
+            "ERROR" => "log-entry log-error",
+            "WARNING" => "log-entry log-warning",
+            _ => "log-entry log-info"
+        };
+    }
+    
+    void IDisposable.Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    private class DiagnosticCheck
+    {
+        public string Name { get; set; } = "";
+        public bool IsRunning { get; set; }
+        public bool IsSuccess { get; set; }
+        public string Details { get; set; } = "";
+    }
+    
+    private class LogEntry
+    {
+        public DateTime Timestamp { get; set; }
+        public string Level { get; set; } = "INFO";
+        public string Message { get; set; } = "";
+    }
+}

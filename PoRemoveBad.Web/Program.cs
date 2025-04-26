@@ -1,8 +1,13 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PoRemoveBad.Core.Services;
 using PoRemoveBad.Web;
 using PoRemoveBad.Web.Services;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Entry point for the Blazor WebAssembly application.
@@ -19,12 +24,19 @@ public class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
+        // Configure standard HttpClient with best practices
+        builder.Services.AddScoped(sp => new HttpClient 
+        { 
+            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+        });
+
         // Configure enhanced HttpClient with better performance
         builder.Services.AddHttpClient<IAdvancedTextAnalysisService, AdvancedTextAnalysisService>(client =>
         {
             client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        })
+        .SetHandlerLifetime(TimeSpan.FromMinutes(5)); // Increase the handler lifetime for better performance
 
         // Register the TextProcessingService
         builder.Services.AddScoped<ITextProcessingService, TextProcessingService>();
@@ -40,6 +52,11 @@ public class Program
         builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
         builder.Logging.AddFilter("System", LogLevel.Warning);
 
-        await builder.Build().RunAsync();
+        // Note: Integrity validation is disabled in index.html with custom Blazor.start()
+        // configuration for .NET 9.0 compatibility
+
+        // Create and run the WebAssembly host
+        var host = builder.Build();
+        await host.RunAsync();
     }
 }

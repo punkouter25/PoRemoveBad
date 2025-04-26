@@ -45,6 +45,8 @@
                     }
                 </button>
 
+                <p @onclick="TestClick">Click me to test event handling</p>
+
                 @if (statistics != null)
                 {
                     <div class="btn-group ms-2">
@@ -144,6 +146,11 @@
         }
     }
 
+    private void TestClick()
+    {
+        Console.WriteLine("TestClick was called!");
+    }
+
     private async Task SwitchDictionary(string newType)
     {
         try
@@ -170,6 +177,7 @@
 
     private async Task ProcessText()
     {
+        Console.WriteLine($"ProcessText called with input: {inputText}");
         if (string.IsNullOrWhiteSpace(inputText)) return;
 
         try

@@ -23,6 +23,25 @@ public class TextAnalysisController : ControllerBase
     }
 
     /// <summary>
+    /// Returns the status of the text analysis service.
+    /// </summary>
+    /// <returns>Status of the text analysis service.</returns>
+    [HttpGet("status")]
+    public ActionResult GetStatus()
+    {
+        try
+        {
+            _logger.LogInformation("Text analysis service status requested at {Time}", DateTime.UtcNow);
+            return Ok(new { status = "Available", timestamp = DateTime.UtcNow });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving text analysis service status");
+            return StatusCode(500, new { status = "Error", message = ex.Message, timestamp = DateTime.UtcNow });
+        }
+    }
+
+    /// <summary>
     /// Analyzes text for sentiment, grammar, vocabulary, and target audience.
     /// </summary>
     /// <param name="request">The text analysis request.</param>
@@ -137,4 +156,4 @@ public class TextAnalysisRequest
     /// Gets or sets the text to analyze.
     /// </summary>
     public string Text { get; set; } = string.Empty;
-} 
+}

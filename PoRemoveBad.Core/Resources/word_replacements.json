@@ -307,12 +307,6 @@
       "partOfSpeech": "Noun"
     },
     {
-      "originalWord": "sucks",
-      "replacementOptions": [ "is terrible", "is awful", "is poor" ],
-      "category": "Mild",
-      "partOfSpeech": "Verb"
-    },
-    {
       "originalWord": "stinks",
       "replacementOptions": [ "is unpleasant", "is poor", "is bad" ],
       "category": "Mild",
@@ -717,12 +711,6 @@
     {
       "originalWord": "motherfucker",
       "replacementOptions": [ "brother", "sister", "cousin", "nephew" ],
-      "category": "Inappropriate",
-      "partOfSpeech": "Noun"
-    },
-    {
-      "originalWord": "bitch",
-      "replacementOptions": [ "lady", "woman", "female", "gal" ],
       "category": "Inappropriate",
       "partOfSpeech": "Noun"
     },
