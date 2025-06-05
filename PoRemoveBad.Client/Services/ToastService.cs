@@ -1,7 +1,7 @@
 using System.Timers;
 using Timer = System.Timers.Timer;
 
-namespace PoRemoveBad.Web.Services;
+namespace PoRemoveBad.Client.Services;
 
 public enum ToastLevel
 {

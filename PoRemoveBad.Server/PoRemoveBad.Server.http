@@ -1,0 +1,6 @@
+@PoRemoveBad.Server_HostAddress = http://localhost:5190
+
+GET {{PoRemoveBad.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

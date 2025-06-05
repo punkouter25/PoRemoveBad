@@ -1,0 +1,3 @@
+2025-06-04 21:15:44.463 -04:00 [INF] Starting PoRemoveBad Server
+2025-06-04 21:16:52.771 -04:00 [INF] Starting PoRemoveBad Server
+2025-06-04 21:20:36.118 -04:00 [INF] Starting PoRemoveBad Server

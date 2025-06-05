@@ -2,22 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch and Debug Blazor WebAssembly",
+            "name": "Launch PoRemoveBad Server",
             "type": "blazorwasm",
             "request": "launch",
-            "cwd": "${workspaceFolder}/PoRemoveBad.Web",
-            "browser": "edge",
-            "url": "https://localhost:7126",
-            "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
-        },
-        {
-            "name": "Launch and Debug Blazor WebAssembly (Chrome)",
-            "type": "blazorwasm",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/PoRemoveBad.Web",
+            "hosted": true,
+            "program": "${workspaceFolder}/PoRemoveBad.Server/bin/Debug/net9.0/PoRemoveBad.Server.dll",
+            "cwd": "${workspaceFolder}/PoRemoveBad.Server",
             "browser": "chrome",
-            "url": "https://localhost:7126",
-            "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
         }
     ]
 }
