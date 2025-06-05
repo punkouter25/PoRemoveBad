@@ -1,7 +1,6 @@
 {
     "version": "0.2.0",
-    "configurations": [
-        {
+    "configurations": [        {
             "name": "Launch PoRemoveBad Server",
             "type": "blazorwasm",
             "request": "launch",
@@ -11,7 +10,8 @@
             "browser": "chrome",
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
-            }
+            },
+            "url": "https://localhost:7286"
         }
     ]
 }

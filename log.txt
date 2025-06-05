@@ -2,3 +2,5 @@
 2025-06-04 21:16:52.771 -04:00 [INF] Starting PoRemoveBad Server
 2025-06-04 21:20:36.118 -04:00 [INF] Starting PoRemoveBad Server
 2025-06-05 14:47:35.525 -04:00 [INF] Starting PoRemoveBad Server
+2025-06-05 15:37:53.596 -04:00 [INF] Starting PoRemoveBad Server
+2025-06-05 15:49:46.942 -04:00 [INF] Starting PoRemoveBad Server
