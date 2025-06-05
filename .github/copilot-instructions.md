@@ -45,7 +45,7 @@ Prefer Azure CLI over the portal/UI for configuration.
 Use the existing PoShared resource group for shared Azure resources (App Service Plan, Azure OpenAI, etc.).
 Use Azure CLI (az) and GitHub CLI (gh) to retrieve configuration information.
 Place the Log Analytics resource in the application's resource group.
-Create a Bicep file in the root folder for the App Service (Web API) and potentially Azure Table Storage (if used) for easy creation or use azd up (whatever works easiest)
+Create a YML file in the root folder for the App Service (Web API) and potentially Azure Table Storage (if used) / Use azd up with this YML file to create new resource group and resources.
 Mandatory Diagnostics Page (Diag.razor - Client Project):
 Automatically create a Diag.razor page accessible via /diag.
 Communicate with the Server project to verify connections.
