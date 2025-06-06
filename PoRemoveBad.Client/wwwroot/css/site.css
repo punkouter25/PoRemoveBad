@@ -70,7 +70,7 @@ a, .btn-link {
 }
 
 a:hover, .btn-link:hover {
-    color: lighten(var(--primary-color), 15%); /* Lighten primary on hover */
+    color: #4285f4; /* Lighter shade of primary color */
     text-decoration: underline;
 }
 
@@ -91,8 +91,8 @@ a:hover, .btn-link:hover {
 }
 
 .btn-primary:hover {
-    background-color: darken(var(--primary-color), 10%);
-    border-color: darken(var(--primary-color), 10%);
+    background-color: #0b5ed7; /* Darker shade of primary color */
+    border-color: #0b5ed7;
     box-shadow: var(--modern-shadow); /* Add subtle shadow on hover */
 }
 
@@ -104,8 +104,8 @@ a:hover, .btn-link:hover {
 }
 
 .btn-secondary:hover {
-    background-color: darken(var(--secondary-color), 10%);
-    border-color: darken(var(--secondary-color), 10%);
+    background-color: #5c636a; /* Darker shade of secondary color */
+    border-color: #5c636a;
     box-shadow: var(--modern-shadow);
 }
 
@@ -210,7 +210,7 @@ a:hover, .btn-link:hover {
 
 
 .blazor-error-boundary {
-    background: rgba(var(--danger-color), 0.1); /* Lighter background for boundary */
+    background: rgba(220, 53, 69, 0.1); /* Lighter background for boundary */
     border: 1px solid var(--danger-color);
     border-radius: var(--border-radius);
     padding: 1rem;
@@ -341,7 +341,7 @@ tr:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(var(--background-color), 0.8); /* Semi-transparent background */
+    background-color: rgba(33, 37, 41, 0.8); /* Semi-transparent background */
     backdrop-filter: blur(5px); /* Blur effect */
     z-index: 9999;
 }
@@ -416,4 +416,38 @@ main {
     color: var(--text-muted); /* Muted color for labels */
     font-weight: 500;
     font-size: 0.9rem; /* Slightly smaller labels */
+}
+
+/* Log Entry Styles for Diagnostics */
+.log-container {
+    background-color: var(--surface-color);
+    border: var(--standard-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-md);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.log-entry {
+    padding: var(--space-sm);
+    margin-bottom: var(--space-xs);
+    border-radius: var(--border-radius);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    border-left: 3px solid var(--border-color);
+}
+
+.log-info {
+    background-color: rgba(13, 202, 240, 0.1);
+    border-left-color: var(--info-color);
+}
+
+.log-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left-color: var(--warning-color);
+}
+
+.log-error {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left-color: var(--danger-color);
 }

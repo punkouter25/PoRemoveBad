@@ -1,14 +1,16 @@
 .navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-color);
+    border: var(--standard-border);
 }
 
 .top-row {
     height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background-color: var(--header-background);
 }
 
 .navbar-brand {
     font-size: 1.1rem;
+    color: var(--text-color);
 }
 
 .oi {
@@ -32,22 +34,24 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
-        border-radius: 4px;
+        color: var(--text-muted);
+        border-radius: var(--border-radius);
         height: 3rem;
         display: flex;
         align-items: center;
         line-height: 3rem;
+        transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
+        padding: 0 0.5rem;
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
+    background-color: var(--primary-color);
+    color: #ffffff;
 }
 
 .nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+    background-color: var(--surface-color);
+    color: var(--text-color);
 }
 
 @media (min-width: 641px) {

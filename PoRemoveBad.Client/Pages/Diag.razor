@@ -96,7 +96,7 @@
     private List<DiagnosticCheck> _diagnosticChecks = new();
     private List<LogEntry> _logEntries = new();
     private string _browserInfo = "Detecting...";
-    private string _runtimeInfo = ".NET 9.0";
+    private string _runtimeInfo = ".NET 8.0";
     private System.Threading.Timer? _timer;
     private bool _diagnosticsComplete = false;
 
@@ -108,7 +108,6 @@
         _diagnosticChecks.Add(new DiagnosticCheck { Name = "API Connection", IsRunning = true });
         _diagnosticChecks.Add(new DiagnosticCheck { Name = "Internet Connection", IsRunning = true });
         _diagnosticChecks.Add(new DiagnosticCheck { Name = "Base URL Configuration", IsRunning = true });
-        _diagnosticChecks.Add(new DiagnosticCheck { Name = "Data Access", IsRunning = true });
         
         // Start diagnostics
         _timer = new System.Threading.Timer(_ => RunDiagnosticsAsync(), null, 500, Timeout.Infinite);
@@ -128,9 +127,6 @@
             
             // Check base URL configuration
             CheckBaseUrlConfiguration();
-            
-            // Check data access
-            await CheckDataAccessAsync();
             
             // Log completion
             LogInfo("All diagnostic checks completed");
@@ -251,41 +247,6 @@
             check.IsSuccess = false;
             check.Details = $"Error: {ex.Message}";
             LogError($"Base URL configuration check error: {ex.Message}");
-        }
-        finally
-        {
-            check.IsRunning = false;
-        }
-    }
-
-    private async Task CheckDataAccessAsync()
-    {
-        var check = _diagnosticChecks.First(c => c.Name == "Data Access");
-        try
-        {
-            LogInfo("Checking data access...");
-            try
-            {
-                var response = await Http.GetAsync("api/textanalysis/status");
-                if (response.IsSuccessStatusCode)
-                {
-                    check.IsSuccess = true;
-                    check.Details = "Data access is working properly.";
-                    LogInfo("Data access check successful");
-                }
-                else
-                {
-                    check.IsSuccess = false;
-                    check.Details = $"Data access returned status: {response.StatusCode}";
-                    LogWarning($"Data access check failed: {response.StatusCode}");
-                }
-            }
-            catch (Exception ex)
-            {
-                check.IsSuccess = false;
-                check.Details = $"Error: {ex.Message}";
-                LogError($"Data access check error: {ex.Message}");
-            }
         }
         finally
         {

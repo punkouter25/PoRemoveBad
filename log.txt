@@ -4,3 +4,13 @@
 2025-06-05 14:47:35.525 -04:00 [INF] Starting PoRemoveBad Server
 2025-06-05 15:37:53.596 -04:00 [INF] Starting PoRemoveBad Server
 2025-06-05 15:49:46.942 -04:00 [INF] Starting PoRemoveBad Server
+2025-06-06 11:58:30.229 +00:00 [INF] Starting PoRemoveBad Server
+2025-06-06 11:58:31.538 +00:00 [INF] User profile is available. Using '/home/runner/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-06 11:58:31.685 +00:00 [INF] PoRemoveBad Server started successfully
+2025-06-06 11:58:31.704 +00:00 [INF] Creating key {ff21eb3b-4621-4cc4-bcc6-4480bf7ec53b} with creation date 2025-06-06 11:58:31Z, activation date 2025-06-06 11:58:31Z, and expiration date 2025-09-04 11:58:31Z.
+2025-06-06 11:58:31.747 +00:00 [WRN] No XML encryptor configured. Key {ff21eb3b-4621-4cc4-bcc6-4480bf7ec53b} may be persisted to storage in unencrypted form.
+2025-06-06 11:58:31.751 +00:00 [INF] Writing data to file '/home/runner/.aspnet/DataProtection-Keys/key-ff21eb3b-4621-4cc4-bcc6-4480bf7ec53b.xml'.
+2025-06-06 11:58:31.994 +00:00 [INF] Now listening on: http://localhost:5190
+2025-06-06 11:58:31.996 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-06 11:58:31.996 +00:00 [INF] Hosting environment: Development
+2025-06-06 11:58:31.997 +00:00 [INF] Content root path: /home/runner/work/PoRemoveBad/PoRemoveBad/PoRemoveBad.Server
