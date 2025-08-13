@@ -1,0 +1,55 @@
+%% Component Diagram — PoRemoveBad
+%% Language-agnostic component overview for regeneration
+
+graph TB
+  subgraph Frontend
+    direction TB
+    UI[Web UI - Editor]
+    DiagPage[Diagnostics Page - diag]
+    UI -->|calls| API[HTTP API]
+    DiagPage -->|calls| API
+  end
+
+  subgraph Backend
+    direction TB
+    API[PoRemoveBad API]
+    AnalysisSvc[Text Analysis Service]
+    ReplaceSvc[Replacement Service]
+    ExportSvc[Export Service]
+    HealthSvc[Health & Diagnostics]
+    API --> AnalysisSvc
+    API --> ReplaceSvc
+    API --> ExportSvc
+    API --> HealthSvc
+  end
+
+  subgraph Core
+    direction TB
+    RulesStore[Replacement Lists]
+    Tokenizer[Tokenization]
+    RulesStore --> AnalysisSvc
+    Tokenizer --> AnalysisSvc
+  end
+
+  subgraph Storage
+    direction TB
+    TableStorage[Table Storage]
+    BlobStorage[Blob Storage]
+    ExportSvc --> BlobStorage
+    HealthSvc --> TableStorage
+    HealthSvc --> BlobStorage
+  end
+
+  subgraph Infra
+    direction TB
+    IaC[Infrastructure as Code]
+    CI[CI/CD]
+    IaC -->|provisions| TableStorage
+    IaC -->|provisions| BlobStorage
+    CI -->|deploys| API
+    CI -->|deploys| Frontend
+  end
+
+  UI -.->|served as static assets| API
+  API -->|reads| RulesStore
+  RulesStore -->|can be local JSON| Core

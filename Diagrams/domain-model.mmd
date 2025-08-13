@@ -1,0 +1,52 @@
+%% Domain Model — PoRemoveBad
+%% Language-agnostic domain model for regeneration
+
+classDiagram
+  class TextDocument {
+    +string Id
+    +string Content
+    +DateTime CreatedAt
+    +int WordCount()
+  }
+
+  class Token {
+    +string Text
+    +int Index
+    +string PartOfSpeech
+    +string Category
+  }
+
+  class ReplacementRule {
+    +string Id
+    +string Original
+    +string Replacement
+    +string Category
+    +string Reason
+  }
+
+  class AnalysisResult {
+    +string DocumentId
+    +List~Token~ Tokens
+    +TextStatistics Statistics
+    +List~ReplacementSuggestion~ SuggestedReplacements
+  }
+
+  class ReplacementSuggestion {
+    +string RuleId
+    +string Original
+    +string Replacement
+    +bool Accepted
+  }
+
+  class TextStatistics {
+    +int WordCount
+    +int SentenceCount
+    +Map~string,int~ TopWords
+  }
+
+  TextDocument "1" -- "0..*" Token : contains
+  TextDocument "1" -- "0..1" AnalysisResult : analyzedAs
+  AnalysisResult "1" -- "0..*" ReplacementSuggestion : suggests
+  ReplacementSuggestion "1" -- "1" ReplacementRule : basedOn
+  AnalysisResult "1" -- "1" TextStatistics : has
+  ReplacementRule "0..*" -- "0..*" Token : matches

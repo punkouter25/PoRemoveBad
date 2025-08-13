@@ -1,0 +1,18 @@
+%% User Workflow — PoRemoveBad
+%% High-level user workflow for regenerating the UI/UX
+
+flowchart TD
+  A[User opens Web UI] --> B[Paste or upload text]
+  B --> C[Click Analyze]
+  C --> D[Frontend calls analyze API]
+  D --> E[API calls Text Analysis Service]
+  E --> F[Return analysis result: tokens, stats, suggestions]
+  F --> G[Frontend displays results and statistics]
+  G --> H[User toggles suggestions and clicks Apply]
+  H --> I[Frontend calls replace API]
+  I --> J[Replacement Service applies rules and returns processed text]
+  J --> K[Frontend displays processed text]
+  K --> L[User clicks Export]
+  L --> M[Frontend calls export API]
+  M --> N[Export Service stores file and returns download]
+  N --> O[User downloads processed file]

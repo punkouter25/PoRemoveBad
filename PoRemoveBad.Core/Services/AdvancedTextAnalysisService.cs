@@ -28,9 +28,9 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
     public async Task<AdvancedTextAnalysis> AnalyzeTextAsync(string text)
     {
         _logger.LogInformation("Starting text analysis for {TextLength} characters", text.Length);
-        
+
         var analysis = new AdvancedTextAnalysis();
-        
+
         try
         {
             // Run all analyses sequentially with enhanced performance
@@ -39,7 +39,7 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
             analysis.Vocabulary = await AnalyzeVocabularyAsync(text);
             analysis.TargetAudience = await DetermineTargetAudienceAsync(text);
 
-            _logger.LogInformation("Completed comprehensive text analysis with {GrammarIssuesCount} grammar issues", 
+            _logger.LogInformation("Completed comprehensive text analysis with {GrammarIssuesCount} grammar issues",
                 analysis.GrammarIssues.Count);
         }
         catch (Exception ex)
@@ -54,7 +54,7 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
     public Task<SentimentAnalysis> AnalyzeSentimentAsync(string text)
     {
         _logger.LogInformation("Starting sentiment analysis for {TextLength} characters", text.Length);
-        
+
         // Enhanced sentiment word lists
         var positiveWords = new[] { 
             // General positive
@@ -88,16 +88,16 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
             "against", "oppose", "reject", "refuse", "deny", "prevent", "block"
         };
 
-        var words = text.ToLower().Split(new[] { ' ', '.', ',', '!', '?', ';', ':', '(', ')', '[', ']', '{', '}', '"', '\'', '\n', '\r', '\t' }, 
+        var words = text.ToLower().Split(new[] { ' ', '.', ',', '!', '?', ';', ':', '(', ')', '[', ']', '{', '}', '"', '\'', '\n', '\r', '\t' },
             StringSplitOptions.RemoveEmptyEntries);
-        
+
         var positiveCount = words.Count(w => positiveWords.Contains(w));
         var negativeCount = words.Count(w => negativeWords.Contains(w));
         var totalWords = words.Length;
 
         // Enhanced scoring algorithm
         var score = totalWords > 0 ? (positiveCount - negativeCount) / (double)totalWords : 0;
-        
+
         // More nuanced sentiment labeling
         string label;
         if (score > 0.2) label = "Very Positive";
@@ -107,7 +107,7 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
         else label = "Very Negative";
 
         // Calculate confidence based on sample size and sentiment strength
-        var confidence = Math.Min(1.0, Math.Max(0.3, 
+        var confidence = Math.Min(1.0, Math.Max(0.3,
             (totalWords >= 10 ? 0.7 : totalWords / 14.0) + // Sample size factor
             (Math.Abs(score) * 0.3))); // Sentiment strength factor
 
@@ -130,9 +130,9 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
     public Task<List<GrammarIssue>> AnalyzeGrammarAsync(string text)
     {
         _logger.LogInformation("Starting grammar analysis for {TextLength} characters", text.Length);
-        
+
         var issues = new List<GrammarIssue>();
-        
+
         // Using source-generated regex for better performance
         var firstPersonMatches = FirstPersonRegex().Matches(text);
         var weakAdverbMatches = WeakAdverbRegex().Matches(text);
@@ -191,7 +191,7 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
     public Task<VocabularyAnalysis> AnalyzeVocabularyAsync(string text)
     {
         _logger.LogInformation("Starting vocabulary analysis for {TextLength} characters", text.Length);
-        
+
         var words = text.ToLower()
             .Split(new[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
             .Where(w => w.Length > 2)
@@ -202,7 +202,7 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
             .ToDictionary(g => g.Key, g => g.Count());
 
         var suggestions = new List<VocabularySuggestion>();
-        
+
         var overusedWords = wordFrequency
             .Where(kvp => kvp.Value > 5)
             .Select(kvp => new VocabularySuggestion
@@ -227,7 +227,7 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
     public Task<TargetAudienceRecommendation> DetermineTargetAudienceAsync(string text)
     {
         _logger.LogInformation("Starting target audience analysis for {TextLength} characters", text.Length);
-        
+
         var words = text.Split(new[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
         var avgWordLength = words.Average(w => w.Length);
         var sentenceCount = text.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries).Length;
@@ -277,4 +277,4 @@ public partial class AdvancedTextAnalysisService : IAdvancedTextAnalysisService
             Confidence = confidence
         });
     }
-} 
+}

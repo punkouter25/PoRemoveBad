@@ -1,14 +1,30 @@
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
+    border: var(--standard-border);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    margin-right: 1rem;
 }
 
 .top-row {
     height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background-color: var(--header-background);
+    border-bottom: var(--standard-border);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
 }
 
 .navbar-brand {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color var(--transition-speed) ease-in-out;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-color);
 }
 
 .oi {
@@ -16,11 +32,13 @@
     font-size: 1.1rem;
     vertical-align: text-top;
     top: -2px;
+    color: var(--text-color);
 }
 
 .nav-item {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     padding-bottom: 0.5rem;
+    transition: all var(--transition-speed) ease-in-out;
 }
 
     .nav-item:first-of-type {
@@ -32,22 +50,28 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
-        border-radius: 4px;
+        color: var(--text-muted);
+        border-radius: var(--border-radius);
         height: 3rem;
         display: flex;
         align-items: center;
         line-height: 3rem;
+        padding: 0 1rem;
+        text-decoration: none;
+        transition: all var(--transition-speed) ease-in-out;
+        margin: 0.25rem 0;
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
+    background-color: rgba(77, 171, 247, 0.15);
+    color: var(--primary-color);
+    font-weight: 500;
 }
 
 .nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+    background-color: rgba(77, 171, 247, 0.1);
+    color: var(--primary-color);
+    transform: translateX(2px);
 }
 
 @media (min-width: 641px) {
@@ -58,5 +82,28 @@
     .collapse {
         /* Never collapse the sidebar for wide screens */
         display: block;
+    }
+    
+    .sidebar {
+        background-color: var(--surface-color);
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        border-right: var(--standard-border);
+        box-shadow: var(--subtle-shadow);
+    }
+}
+
+/* Mobile Navigation */
+@media (max-width: 640px) {
+    .navbar-toggler {
+        background-color: var(--input-background);
+        color: var(--text-color);
+        border-color: var(--border-color);
+    }
+    
+    .top-row {
+        background-color: var(--header-background);
+        border-bottom: var(--standard-border);
     }
 }

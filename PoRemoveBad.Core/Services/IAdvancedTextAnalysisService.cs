@@ -41,4 +41,4 @@ public interface IAdvancedTextAnalysisService
     /// <param name="text">The text to analyze.</param>
     /// <returns>A task representing the asynchronous operation, with the target audience recommendations.</returns>
     Task<TargetAudienceRecommendation> DetermineTargetAudienceAsync(string text);
-} 
+}

@@ -28,7 +28,7 @@ public class ExportService : IExportService
     /// Gets the default file name for the exported file.
     /// </summary>
     /// <returns>The default file name.</returns>
-    public string GetDefaultFileName() => 
+    public string GetDefaultFileName() =>
         $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
 
     /// <summary>
@@ -81,7 +81,7 @@ public class ExportService : IExportService
         sb.AppendLine($"Replaced Words: {statistics.ReplacedWordsCount}");
         sb.AppendLine($"Sentences: {statistics.SentenceCount}");
         sb.AppendLine($"Paragraphs: {statistics.ParagraphCount}");
-        
+
         if (statistics.ReplacementFrequency.Any())
         {
             sb.AppendLine();
@@ -109,12 +109,12 @@ public class ExportService : IExportService
         sb.AppendLine("</style>");
         sb.AppendLine("</head>");
         sb.AppendLine("<body>");
-        
+
         sb.AppendLine("<h1>Cleaned Text</h1>");
         // Encode the processed text before inserting into HTML to prevent errors
-        var encodedProcessedText = WebUtility.HtmlEncode(processedText); 
-        sb.AppendLine($"<div style='white-space: pre-wrap;'>{encodedProcessedText}</div>"); 
-        
+        var encodedProcessedText = WebUtility.HtmlEncode(processedText);
+        sb.AppendLine($"<div style='white-space: pre-wrap;'>{encodedProcessedText}</div>");
+
         sb.AppendLine("<h2>Statistics</h2>");
         sb.AppendLine("<div class='stats'>");
         sb.AppendLine($"<p>Total Words: {statistics.TotalWords}</p>");

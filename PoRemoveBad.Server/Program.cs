@@ -22,7 +22,7 @@ public class Program
             .MinimumLevel.Override("System", LogEventLevel.Warning)
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            .WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "..", "log.txt"), 
+            .WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "..", "log.txt"),
                 rollingInterval: RollingInterval.Infinite,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
@@ -41,7 +41,16 @@ public class Program
             builder.Services.AddRazorPages();
 
             // Register Core services
-            builder.Services.AddCoreServices();
+            var tableStorageConnectionString = builder.Configuration.GetConnectionString("AzuriteStorage");
+            if (!string.IsNullOrEmpty(tableStorageConnectionString))
+            {
+                builder.Services.AddCoreServices(tableStorageConnectionString);
+            }
+            else
+            {
+                // Register core services without health checks if no connection string
+                builder.Services.AddCoreServices(string.Empty);
+            }
 
             // Add Application Insights
             var appInsightsConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights");
@@ -51,11 +60,11 @@ public class Program
                 {
                     options.ConnectionString = appInsightsConnectionString;
                 });
-                  // Add Application Insights to Serilog
+                // Add Application Insights to Serilog
                 Log.Logger = new LoggerConfiguration()
                     .ReadFrom.Configuration(builder.Configuration)
                     .WriteTo.Console()
-                    .WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "..", "log.txt"), 
+                    .WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "..", "log.txt"),
                         rollingInterval: RollingInterval.Infinite,
                         outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
                     .WriteTo.ApplicationInsights(appInsightsConnectionString, TelemetryConverter.Traces)

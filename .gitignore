@@ -482,3 +482,16 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Azurite storage emulator files
+__azurite_db_*.json
+__blobstorage__/
+__queuestorage__/
+AzuriteConfig
+
+# Application logs
+log.txt
+
+# Node.js dependencies
+node_modules/
+package-lock.json

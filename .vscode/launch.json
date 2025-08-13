@@ -11,7 +11,7 @@
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
-            "url": "https://localhost:7286"
+            "url": "https://localhost:5001"
         }
     ]
 }

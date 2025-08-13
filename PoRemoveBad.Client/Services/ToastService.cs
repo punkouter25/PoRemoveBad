@@ -92,4 +92,4 @@ public class ToastService : IDisposable
         _timer.Dispose();
         GC.SuppressFinalize(this);
     }
-} 
+}

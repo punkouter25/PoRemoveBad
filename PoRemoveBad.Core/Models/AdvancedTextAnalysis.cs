@@ -151,4 +151,4 @@ public class TargetAudienceRecommendation
     /// Gets or sets the confidence score for the recommendations.
     /// </summary>
     public double Confidence { get; set; }
-} 
+}

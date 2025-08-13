@@ -60,15 +60,15 @@ public partial class TextProcessingService : ITextProcessingService
         if (word.EndsWith("e") && !word.EndsWith("le") && syllableCount > 1 && !VowelGroupRegex().IsMatch(word[^2..^1]))
         {
             // Check if the second to last char is not a vowel before decrementing
-             if (!"aeiouy".Contains(word[^2]))
-             {
-                 syllableCount--;
-             }
+            if (!"aeiouy".Contains(word[^2]))
+            {
+                syllableCount--;
+            }
         }
         // Adjust for 'le' ending if preceded by a consonant
         else if (word.EndsWith("le") && word.Length > 2 && !"aeiouy".Contains(word[^3]))
         {
-             // Already counted by vowel group regex, no change needed unless previous logic reduced it
+            // Already counted by vowel group regex, no change needed unless previous logic reduced it
         }
 
 
@@ -91,7 +91,7 @@ public partial class TextProcessingService : ITextProcessingService
                 _logger.LogInformation("Initializing dictionary of type {DictionaryType}", dictionaryType);
                 _wordDictionary.Clear();
                 _isInitialized = false;
-                
+
                 var assembly = Assembly.GetExecutingAssembly();
                 var resourceName = dictionaryType.ToLower() switch
                 {
@@ -122,7 +122,7 @@ public partial class TextProcessingService : ITextProcessingService
 
                 _logger.LogInformation("Resource found, attempting to deserialize");
                 var data = await JsonSerializer.DeserializeAsync<WordReplacementData>(stream);
-                
+
                 if (data == null)
                 {
                     _logger.LogError("Deserialization resulted in null data");
@@ -151,7 +151,7 @@ public partial class TextProcessingService : ITextProcessingService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to initialize dictionary of type {DictionaryType}. Error details: {ErrorMessage}", 
+                _logger.LogError(ex, "Failed to initialize dictionary of type {DictionaryType}. Error details: {ErrorMessage}",
                     dictionaryType, ex.ToString());
                 throw;
             }
@@ -204,10 +204,10 @@ public partial class TextProcessingService : ITextProcessingService
             {
                 statistics.ReplacedWordsCount++;
                 currentSegment.InappropriateWordCount++;
-                
+
                 statistics.ReplacementFrequency.AddOrUpdate(
-                    word, 
-                    1, 
+                    word,
+                    1,
                     (_, count) => count + 1);
 
                 // Randomly select a replacement option
@@ -250,23 +250,23 @@ public partial class TextProcessingService : ITextProcessingService
         {
             try
             {
-                 // Use double for calculations to maintain precision
+                // Use double for calculations to maintain precision
                 double wordsPerSentence = (double)statistics.TotalWords / statistics.SentenceCount;
                 double syllablesPerWord = (double)totalSyllables / statistics.TotalWords;
 
                 statistics.ReadabilityScore = 206.835 - (1.015 * wordsPerSentence) - (84.6 * syllablesPerWord);
-                 _logger.LogInformation("Calculated Readability Score (FK): {ReadabilityScore}", statistics.ReadabilityScore);
+                _logger.LogInformation("Calculated Readability Score (FK): {ReadabilityScore}", statistics.ReadabilityScore);
             }
             catch (OverflowException ex)
             {
-                 _logger.LogError(ex, "Overflow calculating readability score.");
-                 statistics.ReadabilityScore = 0; // Default on error
+                _logger.LogError(ex, "Overflow calculating readability score.");
+                statistics.ReadabilityScore = 0; // Default on error
             }
         }
         else
         {
             statistics.ReadabilityScore = 0; // Cannot calculate if no sentences or words
-             _logger.LogWarning("Cannot calculate readability score: Sentences={SentenceCount}, Words={WordCount}", statistics.SentenceCount, statistics.TotalWords);
+            _logger.LogWarning("Cannot calculate readability score: Sentences={SentenceCount}, Words={WordCount}", statistics.SentenceCount, statistics.TotalWords);
         }
         // --- End Enhanced Statistics Calculation ---
 

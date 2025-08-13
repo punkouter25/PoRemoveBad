@@ -1,4 +1,4 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 @minLength(1)
 @maxLength(64)
@@ -9,66 +9,73 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-// Generate a unique token to be used in naming resources.
-var resourceToken = toLower(uniqueString(subscription().id, resourceGroup().id, environmentName))
+@description('Id of the user or app to assign application roles')
+param principalId string
 
-// Tags that should be applied to all resources.
-var tags = {
-  'azd-env-name': environmentName
-}
+// Optional parameters
+@description('Location for OpenAI resource')
+param openAiLocation string = 'eastus'
 
-// User-assigned managed identity
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: 'id-${resourceToken}'
+@description('SKU name for OpenAI')
+param openAiSkuName string = 'S0'
+
+var abbrs = loadJsonContent('./abbreviations.json')
+var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+var tags = { 'azd-env-name': environmentName }
+
+// Organize resources in a resource group
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
 // App Service Plan
-resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
-  name: 'plan-${resourceToken}'
-  location: location
-  tags: tags
-  sku: {
-    name: 'F1'
-    tier: 'Free'
-  }
-  properties: {
-    reserved: false
+module appServicePlan './core/host/appserviceplan.bicep' = {
+  name: 'appserviceplan'
+  scope: rg
+  params: {
+    name: '${abbrs.webServerFarms}${resourceToken}'
+    location: location
+    tags: tags
+    sku: {
+      name: 'F1'
+      tier: 'Free'
+    }
   }
 }
 
-// Web App
-resource webApp 'Microsoft.Web/sites@2023-01-01' = {
-  name: 'app-${resourceToken}'
-  location: location
-  tags: union(tags, { 'azd-service-name': 'web' })
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentity.id}': {}
+// App Service
+module web './core/host/appservice.bicep' = {
+  name: 'web'
+  scope: rg
+  params: {
+    name: '${abbrs.webSitesAppService}${resourceToken}'
+    location: location
+    tags: tags
+    appServicePlanId: appServicePlan.outputs.id
+    runtimeName: 'dotnet'
+    runtimeVersion: '9.0'
+    appSettings: {
+      ASPNETCORE_ENVIRONMENT: 'Production'
     }
-  }
-  properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      netFrameworkVersion: 'v8.0'
-      cors: {
-        allowedOrigins: ['*']
-        supportCredentials: false
-      }
-      appSettings: [
-        {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
-        }
-      ]
-    }
-    httpsOnly: true
   }
 }
 
-// Output the web app URL
+// Application Insights
+module monitoring './core/monitor/monitoring.bicep' = {
+  name: 'monitoring'
+  scope: rg
+  params: {
+    location: location
+    tags: tags
+    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
+    applicationInsightsName: '${abbrs.insightsComponents}${resourceToken}'
+  }
+}
+
+// Output values
 output AZURE_LOCATION string = location
-output SERVICE_WEB_ENDPOINT_URL string = 'https://${webApp.properties.defaultHostName}'
-output RESOURCE_GROUP_ID string = resourceGroup().id
+output AZURE_TENANT_ID string = tenant().tenantId
+output APPLICATIONINSIGHTS_CONNECTION_STRING string = monitoring.outputs.applicationInsightsConnectionString
+output WEB_URI string = web.outputs.uri

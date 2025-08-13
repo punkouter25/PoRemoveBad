@@ -1,0 +1,29 @@
+%% Feature Sequence — PoRemoveBad
+%% Sequence diagram for a core feature: Analyze -> Replace -> Export
+
+sequenceDiagram
+  participant U as User
+  participant UI as Web UI
+  participant API as PoRemoveBad API
+  participant Analysis as Text Analysis Service
+  participant Replace as Replacement Service
+  participant Export as Export Service
+  participant Blob as Blob Storage
+
+  U->>UI: Paste text and click Analyze
+  UI->>API: POST /api/analyze { text }
+  API->>Analysis: analyze(text)
+  Analysis-->>API: AnalysisResult
+  API-->>UI: return AnalysisResult
+  U->>UI: Accept suggestions and click Apply
+  UI->>API: POST /api/replace { text, rules }
+  API->>Replace: applyRules(text, rules)
+  Replace-->>API: processedText
+  API-->>UI: processedText
+  U->>UI: Click Export
+  UI->>API: POST /api/export { text, format }
+  API->>Export: generateFile(text, format)
+  Export->>Blob: store(file) (optional)
+  Export-->>API: downloadUrl
+  API-->>UI: downloadUrl
+  UI-->>U: prompt download

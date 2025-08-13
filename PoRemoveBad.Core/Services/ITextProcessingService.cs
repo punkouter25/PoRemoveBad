@@ -8,4 +8,4 @@ public interface ITextProcessingService
     Task InitializeDictionaryAsync(string dictionaryType = "default");
     bool IsInitialized { get; }
     string CurrentDictionaryType { get; }
-} 
+}

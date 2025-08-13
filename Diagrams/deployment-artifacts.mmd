@@ -1,0 +1,31 @@
+%% Deployment Artifacts — PoRemoveBad
+%% Shows Azure resources and connections
+
+graph LR
+  subgraph Azure
+    direction LR
+    RG[Resource Group PoRemoveBad]
+    AS[App Service - API & Frontend]
+    SA[Storage Account]
+    Table[Table Storage]
+    Blob[Blob Storage]
+    AppInsights[Application Insights]
+    RG --> AS
+    RG --> SA
+    SA --> Table
+    SA --> Blob
+    AS -->|reads/writes| Table
+    AS -->|uploads| Blob
+    AS -->|sends telemetry| AppInsights
+  end
+
+  subgraph DevOps
+    direction LR
+    GH[GitHub Actions / CI]
+    GH -->|deploys| AS
+    GH -->|applies IaC| RG
+    IaC[Infra Bicep templates] -->|provisions| RG
+  end
+
+  user[Operator] -->|azd up / azd deploy| GH
+  user -->|az login + azd| IaC

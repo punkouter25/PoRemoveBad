@@ -43,12 +43,12 @@ namespace PoRemoveBad.Web.Controllers
                 {
                     await writer.WriteLineAsync($"PoRemoveBad Diagnostic Log - {DateTime.Now}");
                     await writer.WriteLineAsync("================================================");
-                    
+
                     foreach (var log in logs)
                     {
                         await writer.WriteLineAsync($"[{log.Timestamp:yyyy-MM-dd HH:mm:ss}] [{log.Level}] {log.Message}");
                     }
-                    
+
                     await writer.WriteLineAsync("================================================");
                     await writer.WriteLineAsync($"Log generated at: {DateTime.Now}");
                 }
@@ -72,12 +72,12 @@ namespace PoRemoveBad.Web.Controllers
             /// Gets or sets the timestamp of the log entry.
             /// </summary>
             public DateTime Timestamp { get; set; }
-            
+
             /// <summary>
             /// Gets or sets the log level.
             /// </summary>
             public string Level { get; set; } = "INFO";
-            
+
             /// <summary>
             /// Gets or sets the log message.
             /// </summary>

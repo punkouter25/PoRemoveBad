@@ -27,9 +27,9 @@ public class Program
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
         // Configure HttpClient to communicate with the hosting server
-        builder.Services.AddScoped(sp => new HttpClient 
-        { 
-            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+        builder.Services.AddScoped(sp => new HttpClient
+        {
+            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
         });
 
         // Configure enhanced HttpClient with better performance for API calls
@@ -40,8 +40,9 @@ public class Program
         })
         .SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
-        // Register Core services
-        builder.Services.AddCoreServices();
+        // Register Core services (without health checks for client)
+        builder.Services.AddSingleton<ITextProcessingService, TextProcessingService>();
+        builder.Services.AddSingleton<IExportService, ExportService>();
 
         // Register the ToastService as a singleton
         builder.Services.AddSingleton<ToastService>();
