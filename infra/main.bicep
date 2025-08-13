@@ -9,16 +9,6 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-@description('Id of the user or app to assign application roles')
-param principalId string
-
-// Optional parameters
-@description('Location for OpenAI resource')
-param openAiLocation string = 'eastus'
-
-@description('SKU name for OpenAI')
-param openAiSkuName string = 'S0'
-
 var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
@@ -54,7 +44,6 @@ module web './core/host/appservice.bicep' = {
     location: location
     tags: tags
     appServicePlanId: appServicePlan.outputs.id
-    runtimeName: 'dotnet'
     runtimeVersion: '9.0'
     appSettings: {
       ASPNETCORE_ENVIRONMENT: 'Production'
