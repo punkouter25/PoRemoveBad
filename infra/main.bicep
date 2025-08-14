@@ -90,7 +90,7 @@ resource appService 'Microsoft.Web/sites@2024-04-01' = {
           value: existingApplicationInsights.properties.ConnectionString
         }
         {
-          name: 'ConnectionStrings:AzuriteStorage'
+          name: 'ConnectionStrings:AzureTableStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${existingStorageAccount.name};AccountKey=${existingStorageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
         }
         {

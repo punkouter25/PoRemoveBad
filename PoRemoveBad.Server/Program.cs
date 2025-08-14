@@ -41,7 +41,7 @@ public class Program
             builder.Services.AddRazorPages();
 
             // Register Core services
-            var tableStorageConnectionString = builder.Configuration.GetConnectionString("AzuriteStorage");
+            var tableStorageConnectionString = builder.Configuration.GetConnectionString("AzureTableStorage");
             if (!string.IsNullOrEmpty(tableStorageConnectionString))
             {
                 builder.Services.AddCoreServices(tableStorageConnectionString);
