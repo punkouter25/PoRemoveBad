@@ -2,6 +2,8 @@
 
 PoRemoveBad is a focused text-processing application that identifies and removes unwanted words and "buzzwords" from input text, produces statistics, and allows export of processed text. The implementation is a single-page web UI with a backend HTTP API. This README is language-agnostic and intended to help developers run, test, and deploy the project.
 
+<!-- CI/CD Pipeline Test - Updated at 2025-08-14 -->
+
 ## Summary
 
 - Purpose: Clean and transform text by detecting buzzwords and applying replacement rules, and provide analysis/exports.
