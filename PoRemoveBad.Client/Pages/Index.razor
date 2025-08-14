@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Linq
 @inject ITextProcessingService TextProcessingService
 @inject IExportService ExportService
 @inject ToastService ToastService
@@ -49,13 +50,31 @@
 
                 @if (statistics != null)
                 {
-                    <div class="btn-group ms-2">
-                        @foreach (var format in ExportService.GetSupportedFormats())
-                        {
-                            <button class="btn btn-outline-secondary" @onclick="() => ExportText(format)">
-                                Export as @format.ToUpper()
-                            </button>
-                        }
+                    <div class="dropdown ms-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Export Options
+                        </button>
+                        <ul class="dropdown-menu">
+                            @foreach (var format in ExportService.GetSupportedFormats())
+                            {
+                                var metadata = ExportService.GetFormatMetadata(format);
+                                <li>
+                                    <a class="dropdown-item" href="#" @onclick="() => ExportText(format)" @onclick:preventDefault="true">
+                                        <strong>@metadata.DisplayName</strong>
+                                        <br>
+                                        <small class="text-muted">@metadata.Description</small>
+                                    </a>
+                                </li>
+                            }
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#" @onclick="ShowBatchExportModal" @onclick:preventDefault="true">
+                                    <strong>📦 Batch Export (All Formats)</strong>
+                                    <br>
+                                    <small class="text-muted">Download all formats in a ZIP file</small>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 }
             </div>
@@ -119,17 +138,69 @@
     </div>
 </div>
 
+<!-- Batch Export Modal -->
+<div class="modal fade" id="batchExportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Batch Export</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select the formats you want to include in the batch export:</p>
+                <div class="row">
+                    @foreach (var format in ExportService.GetSupportedFormats())
+                    {
+                        var metadata = ExportService.GetFormatMetadata(format);
+                        <div class="col-md-6 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       id="format_@format" 
+                                       @bind="selectedFormats[format]">
+                                <label class="form-check-label" for="format_@format">
+                                    <strong>@metadata.DisplayName</strong>
+                                    <br>
+                                    <small class="text-muted">@metadata.Description</small>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" @onclick="ExportBatch" data-bs-dismiss="modal" 
+                        disabled="@(!selectedFormats.Values.Any(x => x))">
+                    @if (isBatchExporting)
+                    {
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    Export Selected Formats
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
     private string? inputText;
     private string? processedText;
     private TextStatistics? statistics;
     private bool isProcessing;
     private bool isInitialized;
+    private bool isBatchExporting;
     private string dictionaryType = "default";
+    private Dictionary<string, bool> selectedFormats = new();
     private const long MaxFileSize = 5 * 1024 * 1024; // 5MB limit for uploads
 
     protected override async Task OnInitializedAsync()
     {
+        // Initialize the selected formats dictionary
+        foreach (var format in ExportService.GetSupportedFormats())
+        {
+            selectedFormats[format] = true; // Default to all formats selected
+        }
+
         if (!isInitialized)
         {
             try
@@ -220,7 +291,11 @@
                 "txt" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.txt",
                 "html" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.html",
                 "json" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.json",
-                _ => ExportService.GetDefaultFileName()
+                "csv" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+                "xml" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.xml",
+                "md" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.md",
+                "pdf" => $"cleaned_text_{DateTime.Now:yyyyMMdd_HHmmss}.pdf",
+                _ => ExportService.GetDefaultFileName(format)
             };
 
             // Convert the byte array to a base64 string for downloading
@@ -230,6 +305,10 @@
                 "txt" => "text/plain",
                 "html" => "text/html",
                 "json" => "application/json",
+                "csv" => "text/csv",
+                "xml" => "application/xml",
+                "md" => "text/markdown",
+                "pdf" => "application/pdf",
                 _ => "text/plain"
             };
 
@@ -287,6 +366,53 @@
         {
             isProcessing = false;
             StateHasChanged(); // Ensure UI updates after async operation
+        }
+    }
+
+    private async Task ShowBatchExportModal()
+    {
+        await JSRuntime.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('batchExportModal')).show()");
+    }
+
+    private async Task ExportBatch()
+    {
+        if (processedText == null || statistics == null) return;
+
+        var selectedFormatsList = selectedFormats.Where(x => x.Value).Select(x => x.Key).ToList();
+        if (!selectedFormatsList.Any())
+        {
+            ToastService.ShowWarning("Please select at least one format for batch export.", "No Formats Selected");
+            return;
+        }
+
+        isBatchExporting = true;
+        StateHasChanged();
+
+        try
+        {
+            var exports = new List<(string, TextStatistics, string)>
+            {
+                (processedText, statistics, "cleaned_text")
+            };
+
+            var zipBytes = await ExportService.ExportBatchToZipAsync(exports, selectedFormatsList);
+            var fileName = $"text_analysis_batch_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
+
+            // Convert to base64 and trigger download
+            var base64 = Convert.ToBase64String(zipBytes);
+            await JSRuntime.InvokeVoidAsync("downloadFile", fileName, base64, "application/zip");
+
+            ToastService.ShowSuccess($"Successfully exported {selectedFormatsList.Count} formats to ZIP file", "Batch Export Complete");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Failed to create batch export", "Export Error");
+            Console.WriteLine($"Error creating batch export: {ex.Message}");
+        }
+        finally
+        {
+            isBatchExporting = false;
+            StateHasChanged();
         }
     }
 }

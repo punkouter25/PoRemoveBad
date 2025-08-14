@@ -10,9 +10,10 @@
     --accent-color: #51cf66;  /* Success Green (can be used sparingly) */
     --background-color: #121212; /* Dark background for better contrast */
     --surface-color: #1e1e1e; /* Slightly lighter dark for cards */
-    --input-background: #2d2d2d; /* Input Field Gray */
+    --input-background: #3a3a3a; /* Input Field Gray - Lighter for better contrast */
+    --input-text-color: #f5f5f5; /* Brighter text for inputs */
     --text-color: #e0e0e0; /* Light gray for main text */
-    --text-muted: #a0a0a0; /* Medium gray for muted text */
+    --text-muted: #b0b0b0; /* Brighter medium gray for muted text */
     --border-color: #3a3a3a; /* Subtle Border Gray */
     --header-background: #1a1a1a; /* Header Background */
     --danger-color: #ff6b6b; /* Brighter danger red */
@@ -172,7 +173,7 @@ a:hover, .btn-link:hover {
 .form-control {
     background-color: var(--input-background);
     border: var(--standard-border);
-    color: var(--text-color);
+    color: var(--input-text-color);
     border-radius: var(--border-radius);
     padding: 0.75rem 1rem;
     transition: all var(--transition-speed) ease-in-out;
@@ -193,6 +194,23 @@ a:hover, .btn-link:hover {
 .form-control::placeholder {
     color: var(--text-muted);
     opacity: 1;
+}
+
+/* Specific styling for textarea elements */
+textarea.form-control {
+    background-color: var(--input-background);
+    color: var(--input-text-color);
+    border: 2px solid var(--border-color);
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    resize: vertical;
+    min-height: 120px;
+}
+
+textarea.form-control:focus {
+    background-color: var(--input-background);
+    color: var(--input-text-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.3rem rgba(77, 171, 247, 0.25);
 }
 
 /* Validation Styles */
