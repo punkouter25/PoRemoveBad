@@ -1,70 +1,162 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
+// Core parameters
 @minLength(1)
 @maxLength(64)
-@description('Name of the environment that can be used as part of naming resource convention')
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 param environmentName string
 
 @minLength(1)
 @description('Primary location for all resources')
 param location string
 
-var abbrs = loadJsonContent('./abbreviations.json')
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
-var tags = { 'azd-env-name': environmentName }
+// Computed names
+var resourcePrefix = 'rmv'
+var resourceToken = uniqueString(subscription().id, resourceGroup().id, location, environmentName)
+var appServiceName = 'PoRemoveBad'
 
-// Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${abbrs.resourcesResourceGroups}${environmentName}'
+// Reference to existing resources in PoShared resource group
+var sharedResourceGroupName = 'PoShared'
+
+// Get references to existing resources in PoShared
+resource sharedResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  scope: subscription()
+  name: sharedResourceGroupName
+}
+
+resource existingAppServicePlan 'Microsoft.Web/serverfarms@2024-04-01' existing = {
+  scope: sharedResourceGroup
+  name: 'PoSharedAppServicePlan'
+}
+
+resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  scope: sharedResourceGroup
+  name: 'posharedtablestorage'
+}
+
+resource existingApplicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  scope: sharedResourceGroup
+  name: 'PoSharedApplicationInsights'
+}
+
+resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  scope: sharedResourceGroup
+  name: 'log-iucwaxzqf3hni'
+}
+
+// Create user-assigned managed identity
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'az-${resourcePrefix}-identity-${resourceToken}'
   location: location
-  tags: tags
+  tags: {
+    'azd-env-name': environmentName
+  }
 }
 
-// App Service Plan
-module appServicePlan './core/host/appserviceplan.bicep' = {
-  name: 'appserviceplan'
-  scope: rg
-  params: {
-    name: '${abbrs.webServerFarms}${resourceToken}'
-    location: location
-    tags: tags
-    sku: {
-      name: 'F1'
-      tier: 'Free'
+// Create the App Service
+resource appService 'Microsoft.Web/sites@2024-04-01' = {
+  name: appServiceName
+  location: location
+  kind: 'app'
+  tags: {
+    'azd-env-name': environmentName
+    'azd-service-name': 'PoRemoveBad'
+  }
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    serverFarmId: existingAppServicePlan.id
+    httpsOnly: true
+    publicNetworkAccess: 'Enabled'
+    siteConfig: {
+      cors: {
+        allowedOrigins: ['*']
+        supportCredentials: false
+      }
+      netFrameworkVersion: 'v8.0'
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
+      appSettings: [
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: existingApplicationInsights.properties.ConnectionString
+        }
+        {
+          name: 'ConnectionStrings:ApplicationInsights'
+          value: existingApplicationInsights.properties.ConnectionString
+        }
+        {
+          name: 'ConnectionStrings:AzuriteStorage'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${existingStorageAccount.name};AccountKey=${existingStorageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+        }
+        {
+          name: 'AZURE_CLIENT_ID'
+          value: managedIdentity.properties.clientId
+        }
+      ]
     }
   }
 }
 
-// App Service
-module web './core/host/appservice.bicep' = {
-  name: 'web'
-  scope: rg
-  params: {
-    name: '${abbrs.webSitesAppService}${resourceToken}'
-    location: location
-    tags: tags
-    appServicePlanId: appServicePlan.outputs.id
-    runtimeVersion: '9.0'
-    appSettings: {
-      ASPNETCORE_ENVIRONMENT: 'Production'
-    }
+// Note: Role assignments to shared resources in PoShared resource group 
+// need to be handled separately after deployment
+
+// Diagnostic settings for the app service
+resource appServiceDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: appService
+  name: 'az-${resourcePrefix}-diagnostics-${resourceToken}'
+  properties: {
+    workspaceId: existingLogAnalyticsWorkspace.id
+    logs: [
+      {
+        category: 'AppServiceHTTPLogs'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+      {
+        category: 'AppServiceConsoleLogs'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+      {
+        category: 'AppServiceAppLogs'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
   }
 }
 
-// Application Insights
-module monitoring './core/monitor/monitoring.bicep' = {
-  name: 'monitoring'
-  scope: rg
-  params: {
-    location: location
-    tags: tags
-    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
-    applicationInsightsName: '${abbrs.insightsComponents}${resourceToken}'
-  }
-}
-
-// Output values
+// Outputs
+output RESOURCE_GROUP_ID string = resourceGroup().id
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = monitoring.outputs.applicationInsightsConnectionString
-output WEB_URI string = web.outputs.uri
+output AZURE_SUBSCRIPTION_ID string = subscription().subscriptionId
+
+// App Service outputs
+output SERVICE_POREMOVERBAD_IDENTITY_PRINCIPAL_ID string = managedIdentity.properties.principalId
+output SERVICE_POREMOVERBAD_NAME string = appService.name
+output SERVICE_POREMOVERBAD_URI string = 'https://${appService.properties.defaultHostName}'

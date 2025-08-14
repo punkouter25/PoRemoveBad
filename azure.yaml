@@ -1,9 +1,8 @@
-# azure.yaml defines the Azure Developer CLI (azd) environment
 name: PoRemoveBad
-metadata:
-  template: PoRemoveBad@0.0.1-beta
+infra:
+  provider: bicep
 services:
-  web:
-    project: ./PoRemoveBad.Server
-    language: dotnet
+  PoRemoveBad:
+    project: PoRemoveBad.Server
     host: appservice
+    language: dotnet
